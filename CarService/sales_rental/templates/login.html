@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Login - My Website
+{% endblock %}
+
+{% block content %}
+    <h2>Login</h2>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}    
+    
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required>
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+        </p>
+        <button type="submit">Login</button>
+    </form>
+
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+{% endblock %}
+
