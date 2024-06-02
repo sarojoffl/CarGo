@@ -11,6 +11,7 @@ import uuid
 from datetime import timedelta
 from django.conf import settings
 from django.utils.crypto import get_random_string
+from django.contrib.auth.hashers import make_password
 
 def index(request):
     return render(request, "index.html")
@@ -105,3 +106,70 @@ def confirm_email(request):
             return redirect('confirm_email')
     return render(request, 'confirm_email.html')
 
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST["email"]
+        try:
+            user = User.objects.get(email=email)
+            send_otp(user)
+            messages.success(request, "Check your email for the OTP code to reset your password.")
+            request.session['user_id'] = user.id
+            return redirect('verify_otp')
+        except User.DoesNotExist:
+            messages.error(request, "Email not found.")
+            return redirect('forgot_password')
+    return render(request, "forgot_password.html")
+
+def verify_otp(request):
+    if request.method == "POST":
+        otp = request.POST['otp']
+        user_id = request.session.get('user_id')
+        if not user_id:
+            messages.error(request, "Session expired. Please try again.")
+            return redirect('forgot_password')
+        
+        try:
+            user = User.objects.get(id=user_id, otp=otp)
+            if timezone.now() > user.otp_expiration:
+                messages.error(request, "OTP has expired.")
+                send_otp(user)
+                messages.info(request, "A new OTP has been sent to your email.")
+                return redirect('verify_otp')
+            
+            request.session['otp_verified'] = True
+            return redirect('reset_password')
+        except User.DoesNotExist:
+            messages.error(request, "Invalid OTP.")
+            return redirect('verify_otp')
+    return render(request, "verify_otp.html")
+
+def reset_password(request):
+    if not request.session.get('otp_verified'):
+        messages.error(request, "OTP verification required.")
+        return redirect('forgot_password')
+
+    if request.method == "POST":
+        new_password = request.POST['new_password']
+        confirmation = request.POST['confirmation']
+        
+        if new_password != confirmation:
+            messages.error(request, "Passwords must match.")
+            return redirect('reset_password')
+
+        user_id = request.session.get('user_id')
+        if not user_id:
+            messages.error(request, "Session expired. Please try again.")
+            return redirect('forgot_password')
+
+        try:
+            user = User.objects.get(id=user_id)
+            user.password = make_password(new_password)
+            user.otp = None
+            user.otp_expiration = None
+            user.save()
+            messages.success(request, "Password reset successfully. Please log in.")
+            return redirect('login')
+        except User.DoesNotExist:
+            messages.error(request, "An error occurred. Please try again.")
+            return redirect('reset_password')
+    return render(request, "reset_password.html")
