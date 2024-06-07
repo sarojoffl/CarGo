@@ -1,16 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    Home - My Website
+    Home - Website
 {% endblock %}
 
 {% block content %}
-    <h1>Welcome to My Website!</h1>
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}!</p>
-    {% else %}
-        <p>Please log in or register to access more features.</p>
-    {% endif %}
-    <p>This is the index page.</p>
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+        <img class="image" src="{% static 'images/Rolls-Royce Phantom.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Ford Mustang.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Jeep Wrangler.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Lamborghini Aventador.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Tesla Model S.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Porsche 911.jpg' %}" draggable="false">
+        <img class="image" src="{% static 'images/Chevrolet Corvette.jpg' %}" draggable="false">
+    </div>
 {% endblock %}
-
