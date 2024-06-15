@@ -398,3 +398,13 @@ form.sign-in-form {
     left: 50%;
   }
 }
+
+.messages {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.message {
+    color: #007bff;
+    margin-bottom: 10px;
+}
