@@ -121,7 +121,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'sales_rental' / 'static',
 ]
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Media files
