@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Success</title>
+</head>
+<body>
+    <h1>Transaction Successful!</h1>
+    <p>Thank you, {{ firstname }}. Your transaction has been processed successfully.</p>
+    <div>
+        <h2>Transaction Details</h2>
+        <p>Email: {{ email }}</p>
+        <p>Phone: {{ phone }}</p>
+        <p>Address: {{ address }}, {{ city }}</p>
+        <p>Payment Method: {{ payment_method }}</p>
+        <p>Transaction Type: {{ transaction_type }}</p>
+        {% if same_address %}
+            <p>Billing address is the same as shipping address.</p>
+        {% endif %}
+        {% if transaction_type == "rent" %}
+            <p>Rental Start Date: {{ startdate }}</p>
+            <p>Rental End Date: {{ enddate }}</p>
+        {% else %}
+            <p>Pick-up Date: {{ pickupdate }}</p>
+        {% endif %}
+    </div>
+    <a href="{% url 'index' %}">Return to Home</a>
+</body>
+</html>
+

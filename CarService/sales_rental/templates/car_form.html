@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>{{ form.instance.id|yesno:"Update,Add" }} Car</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{{ form.instance.id|yesno:"Update,Add" }} Car</button>
+  </form>
+  <a href="{% url 'car_list' %}">Back to list</a>
+{% endblock %}
+

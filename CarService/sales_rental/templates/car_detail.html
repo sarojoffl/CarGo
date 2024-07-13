@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo2.png' %}">
+    <title>CarGO - {{ car.make }} {{ car.model }}</title>
+    <link rel="stylesheet" href="{% static 'css/car_detail.css' %}">
+</head>
+<body>
+    <section>
+        <div class="overlay"></div>
+        <nav>
+            <div class="menu-toggle">
+                <img src="{% static 'images/icon-menu.svg' %}" alt="menu icon">
+            </div>
+            <div class="logo">
+                <img src="{% static 'images/logo2.png' %}" alt="logo">
+            </div>
+            <div class="links">
+                <div class="close-menu">
+                    <img src="{% static 'images/icon-close.svg' %}" alt="close">
+                </div>
+                <ul>
+                    <li class="link"><a href="{% url 'index' %}">Home</a></li>
+                    <li class="link"><a href="#">Cars For Sale</a></li>
+                    <li class="link"><a href="#">Cars For Rent</a></li>
+                </ul>
+            </div>
+            {% if user.is_authenticated %}
+                {% if car in user.watchlist.all %}
+                    <a href="{% url 'toggle_watchlist' car.id %}" class="btn btn-warning">Remove from Watchlist</a>
+                {% else %}
+                    <a href="{% url 'toggle_watchlist' car.id %}" class="btn btn-success">Add to Watchlist</a>
+                {% endif %}
+            {% endif %}
+        </nav>
+        <main>
+            <div class="left">
+                <div class="product-img">
+                    {% if car.images.all %}
+                        <img src="{{ car.images.all.0.image.url }}" alt="Main image of {{ car.make }} {{ car.model }}" id="product-preview">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                </div>
+                <div class="thumbnails">
+                    <ul class="thumbnails-list">
+                        {% for image in car.images.all %}
+                            <li class="img-thumbs {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.image.url }}" alt="Thumbnail of {{ car.make }} {{ car.model }}">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="right">
+                <h3>{{ car.make }}</h3>
+                <h1>{{ car.model }}</h1>
+                <p>{{ car.description }}</p>
+                <label for="color">Color</label>
+                <select id="color" name="color">
+                    {% for color in car.colors.all %}
+                        <option value="{{ color.color }}">{{ color.color }}</option>
+                    {% endfor %}
+                </select>
+                <div class="price-description">
+                    {% if car.discount %}
+                        <h2>${{ discounted_price|floatformat:2 }}</h2>
+                        <h4>{{ car.discount }}% off</h4>
+                        <h5><strike>${{ car.price|floatformat:2 }}</strike></h5>
+                    {% else %}
+                        <h2>${{ car.price|floatformat:2 }}</h2>
+                    {% endif %}
+                </div>
+                <div class="cart-function">
+                    {% if car.is_available_for_sale %}
+                        <button id="buy-now-btn" class="btn btn-primary" data-url="{% url 'checkout' %}" data-type="sale" data-car-id="{{ car.id }}">
+                            <img src="{% static 'images/icon-cart-white.svg' %}" alt="cart icon"> Buy Now
+                        </button>
+                    {% endif %}
+                    {% if car.is_available_for_rent %}
+                        <button id="rent-now-btn" class="btn btn-secondary" data-url="{% url 'checkout' %}" data-type="rent" data-car-id="{{ car.id }}">
+                            <img src="{% static 'images/icon-cart-white.svg' %}" alt="cart icon"> Rent
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </section>
+    <div class="showcase" style="display: none;">
+        <div class="left">
+            <div class="close-showcase">
+                <img src="{% static 'images/icon-close-white.svg' %}" alt="close showcase" onclick="closeShowcase()">
+            </div>
+            <div class="product-img">
+                <img src="" alt="Large Preview" id="product-preview-showcase">
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/car_detail.js' %}"></script>
+</body>
+</html>
+

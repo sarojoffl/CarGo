@@ -1,0 +1,228 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: red;
+    color: white;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+}
+
+.menu-toggle i {
+    font-size: 2rem;
+    color: white;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+nav ul li {
+    margin: 0.5em 1em;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5em 1em;
+}
+
+nav ul li a:hover {
+    background-color: #e60000;
+}
+
+nav ul li.right {
+    margin-left: auto;
+}
+
+nav ul li.search-button {
+    display: flex;
+    align-items: center;
+}
+
+nav ul li.search-button input {
+    padding: 0.5em;
+    border: none;
+    border-radius: 4px;
+}
+
+nav ul li.search-button button {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    padding: 0.5em;
+}
+
+nav ul li.search-button button i {
+    color: red;
+}
+
+.home {
+    margin: auto;
+    width: 100%;
+    min-height: 640px;
+    display: flex;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center left;
+}
+
+.home-text {
+    padding: 0 2em;
+    max-width: 600px;
+}
+
+.home-text h1 {
+    font-size: 2.4rem;
+}
+
+.home-text span {
+    color: yellow;
+}
+
+.home-text p {
+    font-size: 1rem;
+    font-weight: 300;
+    margin: 0.5rem 0 1.2rem;
+}
+
+main {
+    padding: 2em;
+}
+
+section {
+    margin-bottom: 2em;
+}
+
+.car-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: center;
+}
+
+.car-item {
+    border: 1px solid #ccc;
+    padding: 1em;
+    width: calc(50% - 2em);
+    box-sizing: border-box;
+}
+
+.car-item h3 {
+    margin-top: 0;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.suggestions {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-width: 300px;
+    width: 100%;
+    z-index: 1000;
+    display: none;
+}
+
+.suggestions p {
+    margin: 0;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+.suggestions p:hover {
+    background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2rem;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    nav {
+        display: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav ul li {
+        width: 100%;
+        margin: 0;
+    }
+
+    nav ul li a {
+        padding: 1em;
+        border-bottom: 1px solid white;
+    }
+
+    nav ul li a:hover {
+        background-color: #e60000;
+    }
+
+    nav.active {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .car-item {
+        width: calc(100% - 2em);
+    }
+    
+    .home-text {
+        padding: 0 1em;
+    }
+    
+    .home-text h1 {
+        font-size: 1.8rem;
+    }
+    
+    .home-text p {
+        font-size: 1rem;
+    }
+}
+

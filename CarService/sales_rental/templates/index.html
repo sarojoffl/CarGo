@@ -1,215 +1,83 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Sales</title>
-    <!-- Link to CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <!-- Box Icons -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>CarGO - Car Rental and Sales</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Navbar -->
     <header>
-        <div class="nav container">
-            <!-- Menu Icon -->
-            <i class='bx bx-menu' id="menu-icon"></i>
-            <!-- Logo -->
-            <a href="#" class="logo">Car<span>Go</span></a>
-            <!-- Navbar List -->
-            <ul class="navbar">
-                <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#cars">Cars for Rent</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#parts">Cars for Sale</a></li>
-                <li><a href="#blog">Our Blog</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'login_register' %}">Sign In</a></li>
-                {% endif %}
+        <div class="logo">CarGO</div>
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li class="search-button">
+                    <input type="text" id="search-input" placeholder="Search...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="search-suggestions" class="suggestions"></div>
+                </li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#sales">Cars for Sale</a></li>
+                <li><a href="#rentals">Cars for Rent</a></li>
+                <li class="right">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login_register' %}">Sign In</a>
+                    {% endif %}
+                </li>
             </ul>
-            <!-- Search Icon -->
-            <i class='bx bx-search' id="search-icon"></i>
-            <!-- Search Box -->
-            <div class="search-box container">
-                <input type="search" placeholder="Search here...">
-            </div>
-        </div>
+        </nav>
     </header>
-    
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    
-    <!-- Home Section -->
-    <section class="home" id="home">
-        <div class="home-text">
-            <h1>Drive your dream <span>car</span> today -<br><span>unmatched quality</span>, <span>unbeatable prices</span>.</h1>
-            <p>Easy way to purchase and rent your dream car at an <span>affordable</span> price!</p>
-            <!-- Home Button -->
-            <a href="#" class="btn">Discover Now</a>
-        </div>
-    </section>
-    
-    <!-- Cars Section -->
-    <section class="cars" id="cars">
-        <div class="heading">
-            <span>All Cars</span>
-            <h2>We have all types of cars</h2>
-            <p>Where Innovation Meets the Road – Drive the Future Today!</p>
-        </div>
-        <!-- Cars Container -->
-        <div class="cars-container container">
-            <div class="box">
-                <img src="{% static 'images/NexonEV.jpg' %}" alt="Nexon EV">
-                <h2>Nexon EV</h2>
+    <main>
+        <section class="home" id="home">
+            <div class="home-text">
+                <h1>Drive your dream <span>car</span> today -<br><span>unmatched quality</span>, <span>unbeatable prices</span>.</h1>
+                <p>Easy way to purchase and rent your dream car at an <span>affordable</span> price!</p>
+                <a href="#" class="btn">Discover Now</a>
             </div>
-            <div class="box">
-                <img src="{% static 'images/Hilux.jpg' %}" alt="Toyota Hilux">
-                <h2>Toyota Hilux</h2>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/Mahindra-Scorpio.jpg' %}" alt="Mahindra Scorpio">
-                <h2>Mahindra Scorpio</h2>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/mahindra-bolero-neo.jpg' %}" alt="Mahindra Bolero Neo">
-                <h2>Mahindra Bolero Neo</h2>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/maruti-suzuki-alto.png' %}" alt="Maruti Suzuki Alto">
-                <h2>Maruti Suzuki Alto</h2>
-            </div>
-        </div>
-    </section>
-    
-    <!-- About Section -->
-    <section class="about container" id="about">
-        <div class="about-img">
-            <img src="{% static 'images/about.png' %}" alt="About Us">
-        </div>
-        <div class="about-text">
-            <span>About Us</span>
-            <h2>Cheap Prices With <br> Quality Cars</h2>
-            <p>Your Journey, Your Choice – Rent or Own with Confidence.</p>
-            <!-- About Button -->
-            <a href="#" class="btn">Learn More</a>
-        </div>
-    </section>
-    
-    <!-- Parts Section -->
-    <section class="parts" id="parts">
-        <div class="heading">
-            <span>What We Offer</span>
-            <h2>Our Cars Are Always Excellent</h2>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis, fugit hic molestias numquam voluptate, dolores sit dolorem quisquam maiores.</p>
-        </div>
-        <!-- Parts Container -->
-        <div class="parts-container container">
-            <div class="box">
-                <img src="{% static 'images/car5.jpg' %}" alt="Tesla">
-                <h3>Tesla</h3>
-                <span>$130.99</span>
-                <i class='bx bxs-star'>(6 Reviews)</i>
-                <a href="#" class="btn">Buy Now</a>
-                <a href="#" class="details">View Details</a>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/car5.jpg' %}" alt="Tesla">
-                <h3>Tesla</h3>
-                <span>$130.99</span>
-                <i class='bx bxs-star'>(6 Reviews)</i>
-                <a href="#" class="btn">Buy Now</a>
-                <a href="#" class="details">View Details</a>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/car5.jpg' %}" alt="Tesla">
-                <h3>Tesla</h3>
-                <span>$130.99</span>
-                <i class='bx bxs-star'>(6 Reviews)</i>
-                <a href="#" class="btn">Buy Now</a>
-                <a href="#" class="details">View Details</a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Blog Section -->
-    <section class="blog" id="blog">
-        <div class="heading">
-            <span>Blog & News</span>
-            <h2>Our Blog Content</h2>
-            <p>Driven by Passion – Your Ultimate Auto Guide!</p>
-        </div>
-        <!-- Blog Container -->
-        <div class="blog-container container">
-            <div class="box">
-                <img src="{% static 'images/car1.jpg' %}" alt="Blog Image">
-                <span>August 21, 2022</span>
-                <h3>How To Get Perfect Car At Low Price</h3>
-                <p>Finding the perfect car at a low price requires careful planning and smart strategies. Begin by defining your needs and setting a clear budget, considering all associated costs like insurance, maintenance, and fuel...</p>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/car8.jpg' %}" alt="Blog Image">
-                <span>August 21, 2022</span>
-                <h3>Thinking of Renting a Car?</h3>
-                <p>Thinking of renting a car? Renting offers flexibility, convenience, and a cost-effective way to explore new destinations or meet short-term transportation needs...</p>
-            </div>
-            <div class="box">
-                <img src="{% static 'images/car3.jpg' %}" alt="Blog Image">
-                <span>August 21, 2022</span>
-                <h3>Buying a Second-Hand Car?</h3>
-                <p>Thinking of buying a second-hand car? Opting for a pre-owned vehicle can be a smart financial decision, offering significant savings compared to new cars while still providing reliable transportation...</p>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container container">
-            <div class="footer-box">
-                <a href="#" class="logo">Car<span>Go</span></a>
-                <div class="social">
-                    <a href="#"><i class='bx bxl-facebook'></i></a>
-                    <a href="#"><i class='bx bxl-twitter'></i></a>
-                    <a href="#"><i class='bx bxl-instagram'></i></a>
+        </section>
+        <section id="sales">
+            <h2>Cars for Sale</h2>
+            <div class="car-list" id="car-sale-list">
+                {% for car in cars_for_sale %}
+                <div class="car-item">
+                    <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                    <p>{{ car.description }}</p>
+                    <p>${{ car.price }}</p>
+                    <a href="{% url 'car_detail' car.id %}">
+            <button class="btn">View Details</button>
+        </a>
                 </div>
+                {% empty %}
+                <p>No cars available for sale.</p>
+                {% endfor %}
             </div>
-            <div class="footer-box">
-                <h3>Quick Links</h3>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Rent</a></li>
-                <li><a href="#">Cars</a></li>
-                <li><a href="#">Blog</a></li>
-            </div>
-            <div class="footer-box">
-                <h3>Location</h3>
-                <li><a href="#">Nepal</a></li>
-                <li><a href="#">Russia</a></li>
-                <li><a href="#">Japan</a></li>
-                <li><a href="#">France</a></li>
-            </div>
-            <div class="footer-box">
-                <h3>Contact</h3>
-                <div class="contact">
-                    <span><i class='bx bxs-map'></i>123 Street, Nepal</span>
-                    <span><i class='bx bxs-phone'></i>+001 1234 678</span>
-                    <span><i class='bx bxs-envelope'></i>support@domain.com</span>
+        </section>
+        <section id="rentals">
+            <h2>Cars for Rent</h2>
+            <div class="car-list" id="car-rental-list">
+                {% for car in cars_for_rent %}
+                <div class="car-item">
+                    <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                    <p>{{ car.description }}</p>
+                    <p>${{ car.price }}</p>
+                    <a href="{% url 'car_detail' car.id %}">
+            <button class="btn">View Details</button>
+        </a>
                 </div>
+                {% empty %}
+                <p>No cars available for rent.</p>
+                {% endfor %}
             </div>
-        </div>
-    </footer>
-    
-    <!-- Link to JavaScript -->
-    <script src="{% static 'js/script.js' %}"></script>
+        </section>
+    </main>
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
 

@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Django specific files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+db.sqlite3
+
+# Environment variables
+.env
+
+# Static files
+staticfiles/
+
+# Media files
+media/
+
+# IDE-specific files (example for VS Code and JetBrains IDEs)
+.vscode/
+.idea/
+

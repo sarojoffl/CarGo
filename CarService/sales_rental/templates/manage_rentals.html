@@ -1,0 +1,18 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Manage Rentals</h1>
+  <ul>
+    {% for rental in rentals %}
+      <li>
+        {{ rental.renter.username }} rented {{ rental.car }} from {{ rental.rental_start_date }} to {{ rental.rental_end_date }}.
+        {% if rental.is_active %}
+          <p>Status: Active</p>
+        {% else %}
+          <p>Status: Completed</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
