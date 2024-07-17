@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/admin-style.css' %}">
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+</head>
+<body>
+    <div class="container">
+        {% block sidebar %}
+        <aside>
+            <div class="toggle">
+                <div class="logo">
+                    <h2>Car<span class="danger">Go</span></h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">close</span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="{% url 'admin_dashboard' %}" class="active">
+                    <span class="material-icons-sharp">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="{% url 'car_list' %}">
+                    <span class="material-icons-sharp">directions_car</span>
+                    <h3>Car List</h3>
+                </a>
+                <a href="{% url 'car_create' %}">
+                    <span class="material-icons-sharp">add_circle</span>
+                    <h3>Add Car</h3>
+                </a>
+                <a href="{% url 'user_list' %}">
+                    <span class="material-icons-sharp">person_outline</span>
+                    <h3>User List</h3>
+                </a>
+                <!-- Uncomment the following lines if Add User functionality is required -->
+                <!--
+                <a href="#">
+                    <span class="material-icons-sharp">add_circle_outline</span>
+                    <h3>Add User</h3>
+                </a>
+                -->
+                <a href="{% url 'logout' %}">
+                    <span class="material-icons-sharp">logout</span>
+                    <h3>Logout</h3>
+                </a>
+            </div>
+        </aside>
+        {% endblock %}
+
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>
+

@@ -1,0 +1,36 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <h1>Car List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in cars %}
+            <tr>
+                <td>{{ car.id }}</td>
+                <td>{{ car.make }}</td>
+                <td>{{ car.model }}</td>
+                <td>{{ car.year }}</td>
+                <td>{{ car.price }}</td>
+                <td>
+                    <a href="{% url 'car_update' car.id %}" class="btn btn-primary">Update</a>
+                    <a href="{% url 'car_delete' car.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+

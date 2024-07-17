@@ -1,4 +1,6 @@
-<h2>My Watchlist</h2>
+{% extends 'base.html' %}
+
+{% block content %}
 {% if watchlist %}
 <ul>
     {% for car in watchlist %}
@@ -14,3 +16,4 @@
 {% else %}
     <p>Your watchlist is empty.</p>
 {% endif %}
+{% endblock %}

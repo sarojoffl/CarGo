@@ -1,213 +1,26 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.db import IntegrityError
-from django.utils import timezone
-from .models import User, Car, Rental, CarColor, Sale
-from .utils import generate_otp, send_otp_email, is_password_valid
-from .forms import CarForm, RentalForm
+from django.contrib.auth import get_user_model
+
 from decimal import Decimal
 
-def login_register_view(request):
-    form_mode = 'signin'  # Default mode
+from .models import Car, Rental, Sale, CarImage
+from .forms import CarForm, CarImageFormSet
 
-    if request.method == "POST":
-        if 'signin' in request.POST:
-            username = request.POST["username"]
-            password = request.POST["password"]
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                if user.email_confirmed:
-                    login(request, user)
-                    if user.is_superuser:
-                        return redirect('admin_dashboard')
-                    else:
-                        return redirect('index')
-                else:
-                    messages.error(request, "Please confirm your email before logging in.")
-                    return redirect('confirm_email')
-            else:
-                messages.error(request, "Invalid username and/or password.", extra_tags='signin')
-                return render(request, 'login_register.html', {'form_mode': 'signin'})
+User = get_user_model()
 
-        elif 'signup' in request.POST:
-            username = request.POST["username"]
-            email = request.POST["email"]
-            password = request.POST["password"]
-            confirmation = request.POST["confirmation"]
-
-            if password != confirmation:
-                messages.error(request, "Passwords must match.", extra_tags='signup')
-                return render(request, 'login_register.html', {'form_mode': 'signup'})
-
-            is_valid, validation_message = is_password_valid(password)
-            if not is_valid:
-                messages.error(request, validation_message, extra_tags='signup')
-                return render(request, 'login_register.html', {'form_mode': 'signup'})
-
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "Email already in use.", extra_tags='signup')
-                return render(request, 'login_register.html', {'form_mode': 'signup'})
-
-            try:
-                user = User.objects.create_user(username, email, password)
-                user.email_confirmed = False
-                user.otp = generate_otp()
-                user.otp_expiration = timezone.now() + timezone.timedelta(minutes=10)
-                user.save()
-                send_otp_email(user, 'Your OTP Code', 'confirm your email')
-                messages.success(request, "Check your email for the OTP code to confirm your email.")
-                return redirect('confirm_email')
-            except IntegrityError:
-                messages.error(request, "Username already taken.", extra_tags='signup')
-                return render(request, 'login_register.html', {'form_mode': 'signup'})
-
-    return render(request, "login_register.html", {'form_mode': form_mode})
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
-def confirm_email(request):
-    if request.method == 'POST':
-        otp = request.POST['otp']
-        try:
-            user = User.objects.get(otp=otp)
-            if user.email_confirmed:
-                messages.info(request, "Email already confirmed.")
-                return redirect('login_register')
-
-            if timezone.now() > user.otp_expiration:
-                messages.error(request, "OTP has expired.")
-                user.otp = generate_otp()  # Regenerate OTP
-                user.otp_expiration = timezone.now() + timezone.timedelta(minutes=10)
-                user.save()
-                send_otp_email(user, 'Your OTP Code', 'confirm your email')
-                messages.info(request, "A new OTP has been sent to your email.")
-                return redirect('confirm_email')
-
-            user.email_confirmed = True
-            user.otp = None
-            user.otp_expiration = None
-            user.save()
-            messages.success(request, "Email confirmed successfully. Please log in.")
-            return redirect('login_register')
-        except User.DoesNotExist:
-            messages.error(request, "Invalid OTP.")
-            return redirect('confirm_email')
-    return render(request, 'confirm_email.html')
-
-def forgot_password(request):
-    if request.method == "POST":
-        email = request.POST["email"]
-        try:
-            user = User.objects.get(email=email)
-            user.otp = generate_otp()  # Generate OTP
-            user.otp_expiration = timezone.now() + timezone.timedelta(minutes=10)
-            user.save()
-            send_otp_email(user, 'Password Reset OTP', 'reset your password')
-            messages.success(request, "Check your email for the OTP code to reset your password.")
-            request.session['user_id'] = user.id
-            return redirect('verify_otp')
-        except User.DoesNotExist:
-            messages.error(request, "Email not found.")
-            return redirect('forgot_password')
-    return render(request, "forgot_password.html")
-
-def verify_otp(request):
-    if request.method == "POST":
-        otp = request.POST['otp']
-        user_id = request.session.get('user_id')
-        if not user_id:
-            messages.error(request, "Session expired. Please try again.")
-            return redirect('forgot_password')
-        
-        try:
-            user = User.objects.get(id=user_id, otp=otp)
-            if timezone.now() > user.otp_expiration:
-                messages.error(request, "OTP has expired.")
-                user.otp = generate_otp()  # Regenerate OTP
-                user.otp_expiration = timezone.now() + timezone.timedelta(minutes=10)
-                user.save()
-                send_otp_email(user, 'Password Reset OTP', 'reset your password')
-                messages.info(request, "A new OTP has been sent to your email.")
-                return redirect('verify_otp')
-            
-            request.session['otp_verified'] = True
-            return redirect('reset_password')
-        except User.DoesNotExist:
-            messages.error(request, "Invalid OTP.")
-            return redirect('verify_otp')
-    return render(request, "verify_otp.html")
-
-def reset_password(request):
-    if not request.session.get('otp_verified'):
-        messages.error(request, "OTP verification required.")
-        return redirect('forgot_password')
-
-    if request.method == "POST":
-        new_password = request.POST['new_password']
-        confirmation = request.POST['confirmation']
-        
-        if new_password != confirmation:
-            messages.error(request, "Passwords must match.")
-            return redirect('reset_password')
-
-        # Validate the new password
-        is_valid, validation_message = is_password_valid(new_password)
-        if not is_valid:
-            messages.error(request, validation_message)
-            return redirect('reset_password')
-
-        user_id = request.session.get('user_id')
-        if not user_id:
-            messages.error(request, "Session expired. Please try again.")
-            return redirect('forgot_password')
-
-        try:
-            user = User.objects.get(id=user_id)
-            user.set_password(new_password)
-            user.otp = None
-            user.otp_expiration = None
-            user.save()
-            messages.success(request, "Password reset successfully. Please log in.")
-            return redirect('login_register')
-        except User.DoesNotExist:
-            messages.error(request, "An error occurred. Please try again.")
-            return redirect('reset_password')
-    return render(request, "reset_password.html")
-    
-def resend_otp(request):
-    if request.method == "POST":
-        user_id = request.session.get('user_id')
-        
-        if not user_id:
-            messages.error(request, "Session expired. Please try again.")
-            return redirect('forgot_password')
-        
-        try:
-            user = User.objects.get(id=user_id)
-            user.otp = generate_otp()
-            user.otp_expiration = timezone.now() + timezone.timedelta(minutes=10)
-            user.save()
-            
-            send_otp_email(user, 'Verify Your OTP', 'verify your action')
-            
-            messages.info(request, "A new OTP has been sent to your email.")
-            
-            if 'verify_otp' in request.META.get('HTTP_REFERER', ''):
-                return redirect('verify_otp')
-            else:
-                return redirect('confirm_email')
-        
-        except User.DoesNotExist:
-            messages.error(request, "User not found.")
-            return redirect('forgot_password')
-    
-    return render(request, "verify_otp.html")
+def index(request):
+    cars_for_sale = Car.objects.filter(is_available_for_sale=True)
+    cars_for_rent = Car.objects.filter(is_available_for_rent=True)
+    context = {
+        'cars_for_sale': cars_for_sale,
+        'cars_for_rent': cars_for_rent,
+    }
+    return render(request, 'index.html', context)
     
 def car_detail(request, car_id):
     car = get_object_or_404(Car, id=car_id)
@@ -243,25 +56,60 @@ def toggle_watchlist(request, car_id):
 @user_passes_test(lambda u: u.is_superuser)
 def car_create(request):
     if request.method == "POST":
-        form = CarForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        form = CarForm(request.POST)
+        formset = CarImageFormSet(request.POST, request.FILES, queryset=CarImage.objects.none())
+        if form.is_valid() and formset.is_valid():
+            car = form.save()
+            for form in formset.cleaned_data:
+                if form:
+                    image = form['image']
+                    description = form.get('description', '')
+                    CarImage.objects.create(image=image, description=description, cars=car)
             return redirect('car_list')
     else:
         form = CarForm()
-    return render(request, 'car_form.html', {'form': form})
+        formset = CarImageFormSet(queryset=CarImage.objects.none())
+    return render(request, 'car_form.html', {'form': form, 'formset': formset})
 
 @user_passes_test(lambda u: u.is_superuser)
 def car_update(request, car_id):
     car = get_object_or_404(Car, pk=car_id)
     if request.method == "POST":
-        form = CarForm(request.POST, request.FILES, instance=car)
-        if form.is_valid():
+        form = CarForm(request.POST, instance=car)
+        formset = CarImageFormSet(request.POST, request.FILES, queryset=car.images.all())
+        if form.is_valid() and formset.is_valid():
             form.save()
-            return redirect('car_detail', car_id=car.id)
+            for form in formset:
+                if form.cleaned_data:
+                    image = form.cleaned_data['image']
+                    description = form.cleaned_data.get('description', '')
+                    if form.cleaned_data.get('DELETE'):
+                        form.instance.delete()
+                    else:
+                        form.instance.cars.add(car)
+                        form.instance.image = image
+                        form.instance.description = description
+                        form.instance.save()
+            return redirect('car_list')
     else:
         form = CarForm(instance=car)
-    return render(request, 'car_form.html', {'form': form})
+        formset = CarImageFormSet(queryset=car.images.all())
+    return render(request, 'car_form.html', {'form': form, 'formset': formset})
+    
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    new_users = User.objects.order_by('-date_joined')[:4]
+
+    context = {
+        'new_users': new_users,
+    }
+
+    return render(request, 'admin_dashboard.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def car_list(request):
+    cars = Car.objects.all()
+    return render(request, 'car_list.html', {'cars': cars})
 
 @user_passes_test(lambda u: u.is_superuser)
 def car_delete(request, car_id):
@@ -272,9 +120,9 @@ def car_delete(request, car_id):
     return render(request, 'car_confirm_delete.html', {'car': car})
 
 @user_passes_test(lambda u: u.is_superuser)
-def manage_rentals(request):
-    rentals = Rental.objects.all()
-    return render(request, 'manage_rentals.html', {'rentals': rentals})    
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'user_list.html', {'users': users})
 
 def checkout(request):
     car_id = request.GET.get('car_id')

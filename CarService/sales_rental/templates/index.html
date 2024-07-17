@@ -1,83 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarGO - Car Rental and Sales</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <header>
-        <div class="logo">CarGO</div>
-        <div class="menu-toggle" id="mobile-menu">
-            <i class="fas fa-bars"></i>
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <section class="home" id="home">
+        <div class="home-text">
+            <h1>Drive your dream <span>car</span> today -<br><span>unmatched quality</span>, <span>unbeatable prices</span>.</h1>
+            <p>Easy way to purchase and rent your dream car at an <span>affordable</span> price!</p>
+            <a href="#" class="btn">Discover Now</a>
         </div>
-        <nav>
-            <ul class="nav-list">
-                <li class="search-button">
-                    <input type="text" id="search-input" placeholder="Search...">
-                    <button id="search-btn"><i class="fas fa-search"></i></button>
-                    <div id="search-suggestions" class="suggestions"></div>
-                </li>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#sales">Cars for Sale</a></li>
-                <li><a href="#rentals">Cars for Rent</a></li>
-                <li class="right">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'logout' %}">Logout</a>
-                    {% else %}
-                        <a href="{% url 'login_register' %}">Sign In</a>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="home" id="home">
-            <div class="home-text">
-                <h1>Drive your dream <span>car</span> today -<br><span>unmatched quality</span>, <span>unbeatable prices</span>.</h1>
-                <p>Easy way to purchase and rent your dream car at an <span>affordable</span> price!</p>
-                <a href="#" class="btn">Discover Now</a>
+    </section>
+    <section id="sales">
+        <h2>Cars for Sale</h2>
+        <div class="car-list" id="car-sale-list">
+            {% for car in cars_for_sale %}
+            <div class="car-item">
+                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                <p>{{ car.description }}</p>
+                <p>${{ car.price }}</p>
+                <a href="{% url 'car_detail' car.id %}">
+                    <button class="btn">View Details</button>
+                </a>
             </div>
-        </section>
-        <section id="sales">
-            <h2>Cars for Sale</h2>
-            <div class="car-list" id="car-sale-list">
-                {% for car in cars_for_sale %}
-                <div class="car-item">
-                    <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
-                    <p>{{ car.description }}</p>
-                    <p>${{ car.price }}</p>
-                    <a href="{% url 'car_detail' car.id %}">
-            <button class="btn">View Details</button>
-        </a>
-                </div>
-                {% empty %}
-                <p>No cars available for sale.</p>
-                {% endfor %}
+            {% empty %}
+            <p>No cars available for sale.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <section id="rentals">
+        <h2>Cars for Rent</h2>
+        <div class="car-list" id="car-rental-list">
+            {% for car in cars_for_rent %}
+            <div class="car-item">
+                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                <p>{{ car.description }}</p>
+                <p>${{ car.price }}</p>
+                <a href="{% url 'car_detail' car.id %}">
+                    <button class="btn">View Details</button>
+                </a>
             </div>
-        </section>
-        <section id="rentals">
-            <h2>Cars for Rent</h2>
-            <div class="car-list" id="car-rental-list">
-                {% for car in cars_for_rent %}
-                <div class="car-item">
-                    <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
-                    <p>{{ car.description }}</p>
-                    <p>${{ car.price }}</p>
-                    <a href="{% url 'car_detail' car.id %}">
-            <button class="btn">View Details</button>
-        </a>
-                </div>
-                {% empty %}
-                <p>No cars available for rent.</p>
-                {% endfor %}
-            </div>
-        </section>
-    </main>
-    <script src="{% static 'js/scripts.js' %}"></script>
-</body>
-</html>
+            {% empty %}
+            <p>No cars available for rent.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}
 

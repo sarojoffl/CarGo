@@ -148,4 +148,3 @@ AUTH_USER_MODEL = 'sales_rental.User'
 
 LOGIN_URL = '/login_register/'
 
-

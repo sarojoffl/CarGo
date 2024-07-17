@@ -45,9 +45,10 @@ class Rental(models.Model):
 
 class CarImage(models.Model):
     image = models.ImageField(upload_to='car_images/')
+    description = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-        return f"Image {self.pk}"
+        return self.description or f"Image {self.pk}"
 
 class CarColor(models.Model):
     color = models.CharField(max_length=50)

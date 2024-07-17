@@ -1,0 +1,24 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <h1>Analytics</h1>
+
+    <div class="new-users">
+        <h2>New Users</h2>
+        <div class="user-list">
+            {% for user in new_users %}
+            <div class="user">
+                <h2>{{ user.username }}</h2>
+                <p>{{ user.date_joined|timesince }} ago</p>
+            </div>
+            {% endfor %}
+            <div class="user">
+                <a href="{% url 'user_list' %}">View All Users</a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+

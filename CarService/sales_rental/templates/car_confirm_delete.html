@@ -1,12 +1,15 @@
-{% extends "base_generic.html" %}
+{% extends "admin_base.html" %}
+{% load static %}
 
 {% block content %}
-  <h2>Delete Car</h2>
-  <p>Are you sure you want to delete {{ car.make }} {{ car.model }} ({{ car.year }})?</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-  </form>
-  <a href="{% url 'car_list' %}">Cancel</a>
+<main>
+    <h1>Delete Car</h1>
+    <p>Are you sure you want to delete {{ car.make }} {{ car.model }} ({{ car.year }})?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'car_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</main>
 {% endblock %}
 
