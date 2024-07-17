@@ -14,14 +14,16 @@ from .forms import CarForm, CarImageFormSet
 User = get_user_model()
 
 def index(request):
+    return render(request, 'index.html')
+
+def sales(request):
     cars_for_sale = Car.objects.filter(is_available_for_sale=True)
+    return render(request, 'sales.html', {'cars_for_sale': cars_for_sale})
+
+def rentals(request):
     cars_for_rent = Car.objects.filter(is_available_for_rent=True)
-    context = {
-        'cars_for_sale': cars_for_sale,
-        'cars_for_rent': cars_for_rent,
-    }
-    return render(request, 'index.html', context)
-    
+    return render(request, 'rentals.html', {'cars_for_rent': cars_for_rent}) 
+        
 def car_detail(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     

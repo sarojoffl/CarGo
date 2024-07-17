@@ -1,39 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Fetch car listings for sale
-    fetch('/api/cars/sale')
-        .then(response => response.json())
-        .then(data => {
-            const saleList = document.getElementById('car-sale-list');
-            data.forEach(car => {
-                const carItem = document.createElement('div');
-                carItem.classList.add('car-item');
-                carItem.innerHTML = `
-                    <h3>${car.name}</h3>
-                    <p>$${car.price}</p>
-                    <button onclick="addToCart('${car.name}', ${car.price})">Add to Cart</button>
-                `;
-                saleList.appendChild(carItem);
-            });
-        });
-
-    // Fetch car listings for rent
-    fetch('/api/cars/rent')
-        .then(response => response.json())
-        .then(data => {
-            const rentalList = document.getElementById('car-rental-list');
-            data.forEach(car => {
-                const carItem = document.createElement('div');
-                carItem.classList.add('car-item');
-                carItem.innerHTML = `
-                    <h3>${car.name}</h3>
-                    <p>$${car.price}/day</p>
-                    <button onclick="addToCart('${car.name}', ${car.price})">Add to Cart</button>
-                `;
-                rentalList.appendChild(carItem);
-            });
-        });
-
-    const lowCostCars = ['Ford Fiesta', 'Chevrolet Spark', 'Nissan Versa', 'Hyundai Accent'];
+const lowCostCars = ['Ford Fiesta', 'Chevrolet Spark', 'Nissan Versa', 'Hyundai Accent'];
 
     document.getElementById('search-btn').addEventListener('click', function() {
         const suggestions = document.getElementById('search-suggestions');

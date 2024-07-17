@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <section id="rentals">
+        <h2>Cars for Rent</h2>
+        <div class="car-list" id="car-rental-list">
+            {% for car in cars_for_rent %}
+            <div class="car-item">
+                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
+                <p>{{ car.description }}</p>
+                <p>${{ car.price }}</p>
+                <a href="{% url 'car_detail' car.id %}">
+                    <button class="btn">View Details</button>
+                </a>
+            </div>
+            {% empty %}
+            <p>No cars available for rent.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}
+

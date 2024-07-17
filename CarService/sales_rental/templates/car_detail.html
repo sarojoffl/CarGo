@@ -25,8 +25,11 @@
                 </div>
                 <ul>
                     <li class="link"><a href="{% url 'index' %}">Home</a></li>
-                    <li class="link"><a href="#">Cars For Sale</a></li>
-                    <li class="link"><a href="#">Cars For Rent</a></li>
+                    <li class="link"><a href="{% url 'sales' %}">Cars for Sale</a></li>
+                    <li class="link"><a href="{% url 'rentals' %}">Cars for Rent</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="link"><a href="{% url 'view_watchlist' %}">Watchlist</a></li>
+                    {% endif %}
                 </ul>
             </div>
             {% if user.is_authenticated %}

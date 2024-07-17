@@ -6,43 +6,7 @@
         <div class="home-text">
             <h1>Drive your dream <span>car</span> today -<br><span>unmatched quality</span>, <span>unbeatable prices</span>.</h1>
             <p>Easy way to purchase and rent your dream car at an <span>affordable</span> price!</p>
-            <a href="#" class="btn">Discover Now</a>
-        </div>
-    </section>
-    <section id="sales">
-        <h2>Cars for Sale</h2>
-        <div class="car-list" id="car-sale-list">
-            {% for car in cars_for_sale %}
-            <div class="car-item">
-                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
-                <p>{{ car.description }}</p>
-                <p>${{ car.price }}</p>
-                <a href="{% url 'car_detail' car.id %}">
-                    <button class="btn">View Details</button>
-                </a>
-            </div>
-            {% empty %}
-            <p>No cars available for sale.</p>
-            {% endfor %}
-        </div>
-    </section>
-    <section id="rentals">
-        <h2>Cars for Rent</h2>
-        <div class="car-list" id="car-rental-list">
-            {% for car in cars_for_rent %}
-            <div class="car-item">
-                <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
-                <p>{{ car.description }}</p>
-                <p>${{ car.price }}</p>
-                <a href="{% url 'car_detail' car.id %}">
-                    <button class="btn">View Details</button>
-                </a>
-            </div>
-            {% empty %}
-            <p>No cars available for rent.</p>
-            {% endfor %}
         </div>
     </section>
 </main>
 {% endblock %}
-
