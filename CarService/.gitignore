@@ -22,7 +22,7 @@ db.sqlite3
 staticfiles/
 
 # Media files
-media/
+# media/
 
 # IDE-specific files (example for VS Code and JetBrains IDEs)
 .vscode/
