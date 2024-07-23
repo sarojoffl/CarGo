@@ -1,0 +1,27 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <h1>Sales History</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Buyer</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales_history %}
+            <tr>
+                <td>{{ sale.car.make }} {{ sale.car.model }}</td>
+                <td>{{ sale.buyer.username }}</td>
+                <td>{{ sale.sale_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+

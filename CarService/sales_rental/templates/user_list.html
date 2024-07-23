@@ -14,6 +14,7 @@
                 <th>Email</th>
                 <th>Date Joined</th>
                 <th>Last Active</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,10 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.date_joined|date:"Y-m-d H:i" }}</td>
                 <td>{{ user.last_login|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <a href="{% url 'user_edit' user.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'user_delete' user.id %}" class="btn btn-danger">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
