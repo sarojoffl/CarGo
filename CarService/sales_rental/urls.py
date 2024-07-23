@@ -12,6 +12,7 @@ urlpatterns = [
     path('verify_otp/', custom_auth_views.verify_otp, name='verify_otp'),
     path('reset_password/', custom_auth_views.reset_password, name='reset_password'),
     path('resend_otp/', custom_auth_views.resend_otp, name='resend_otp'),
+    path('search/', views.search, name='search'),
     path('sales/', views.sales, name='sales'),
     path('rentals/', views.rentals, name='rentals'),
     path('watchlist/', views.view_watchlist, name='view_watchlist'),

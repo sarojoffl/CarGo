@@ -16,6 +16,13 @@ User = get_user_model()
 def index(request):
     return render(request, 'index.html')
 
+def search(request):
+    query = request.GET.get('q')
+    results = []
+    if query:
+        results = Car.objects.filter(model__icontains=query) | Car.objects.filter(make__icontains=query) | Car.objects.filter(description__icontains=query)
+    return render(request, 'search_results.html', {'results': results, 'query': query})
+    
 def sales(request):
     cars_for_sale = Car.objects.filter(is_available_for_sale=True)
     return render(request, 'sales.html', {'cars_for_sale': cars_for_sale})
