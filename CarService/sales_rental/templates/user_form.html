@@ -1,0 +1,15 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <h1>Edit User</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'user_list' %}">Back to list</a>
+</main>
+{% endblock %}
+

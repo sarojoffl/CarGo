@@ -12,7 +12,10 @@
                 <th>Model</th>
                 <th>Year</th>
                 <th>Price</th>
+                <th>Available for Sale</th>
+                <th>Available for Rent</th>
                 <th>Actions</th>
+                <th>History</th>
             </tr>
         </thead>
         <tbody>
@@ -23,9 +26,14 @@
                 <td>{{ car.model }}</td>
                 <td>{{ car.year }}</td>
                 <td>{{ car.price }}</td>
+                <td>{{ car.is_available_for_sale|yesno:"Yes,No" }}</td>
+                <td>{{ car.is_available_for_rent|yesno:"Yes,No" }}</td>
                 <td>
                     <a href="{% url 'car_update' car.id %}" class="btn btn-primary">Update</a>
                     <a href="{% url 'car_delete' car.id %}" class="btn btn-danger">Delete</a>
+                </td>
+                <td>
+                    <a href="{% url 'car_history' car.id %}" class="btn btn-secondary">View History</a>
                 </td>
             </tr>
             {% endfor %}

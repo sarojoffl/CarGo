@@ -11,7 +11,7 @@ import uuid
 import requests
 
 from .models import Car, Rental, Sale, CarImage
-from .forms import CarForm, CarImageFormSet
+from .forms import UserForm, CarForm, CarImageFormSet
 
 User = get_user_model()
 
@@ -75,30 +75,44 @@ def car_update(request, car_id):
     car = get_object_or_404(Car, pk=car_id)
     if request.method == "POST":
         form = CarForm(request.POST, instance=car)
-        formset = CarImageFormSet(request.POST, request.FILES, queryset=car.images.all())
+        formset = CarImageFormSet(request.POST, request.FILES, queryset=CarImage.objects.filter(cars=car))
         if form.is_valid() and formset.is_valid():
-            form.save()
-            for form in formset:
-                if form.cleaned_data:
-                    image = form.cleaned_data['image']
-                    description = form.cleaned_data.get('description', '')
-                    if form.cleaned_data.get('DELETE'):
-                        form.instance.delete()
+            car = form.save()
+            for image_form in formset:
+                if image_form.cleaned_data:
+                    image = image_form.cleaned_data.get('image')
+                    description = image_form.cleaned_data.get('description')
+                    if image_form.cleaned_data.get('DELETE'):
+                        image_form.instance.delete()
                     else:
-                        form.instance.cars.add(car)
-                        form.instance.image = image
-                        form.instance.description = description
-                        form.instance.save()
+                        image_instance = image_form.save(commit=False)
+                        image_instance.description = description
+                        image_instance.save()
+                        image_instance.cars.add(car)
             return redirect('car_list')
     else:
         form = CarForm(instance=car)
-        formset = CarImageFormSet(queryset=car.images.all())
+        formset = CarImageFormSet(queryset=CarImage.objects.filter(cars=car))
     return render(request, 'car_form.html', {'form': form, 'formset': formset})
-
+            
 @user_passes_test(lambda u: u.is_superuser)
 def admin_dashboard(request):
+    total_cars = Car.objects.count()
+    cars_for_sale = Car.objects.filter(is_available_for_sale=True).count()
+    cars_for_rent = Car.objects.filter(is_available_for_rent=True).count()
     new_users = User.objects.order_by('-date_joined')[:4]
-    context = {'new_users': new_users}
+    recent_rentals = Rental.objects.order_by('-rental_start_date')[:5]
+    recent_sales = Sale.objects.order_by('-sale_date')[:5]
+
+    context = {
+        'total_cars': total_cars,
+        'cars_for_sale': cars_for_sale,
+        'cars_for_rent': cars_for_rent,
+        'new_users': new_users,
+        'recent_rentals': recent_rentals,
+        'recent_sales': recent_sales,
+    }
+
     return render(request, 'admin_dashboard.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -119,21 +133,42 @@ def user_list(request):
     users = User.objects.all()
     return render(request, 'user_list.html', {'users': users})
 
+@user_passes_test(lambda u: u.is_superuser)
+def user_edit(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')
+    else:
+        form = UserForm(instance=user)
+    return render(request, 'user_form.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def user_delete(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('user_list')
+    return render(request, 'user_confirm_delete.html', {'user': user})
+
+@login_required
 def checkout(request):
     car_id = request.GET.get('car_id')
     transaction_type = request.GET.get('type', 'sale')
-    rental_days = int(request.GET.get('rental_days', 1))
-    
     car = get_object_or_404(Car, id=car_id)
     
-    rental_rate = Decimal('0.01')
-    rental_price_per_day = car.price * rental_rate
-    total_rental_price = rental_price_per_day * rental_days
-    
     if transaction_type == 'rent':
-        total_price = total_rental_price
+        rental_days = int(request.GET.get('rental_days', 1))
+        rental_rate = Decimal('0.01')
+        rental_price_per_day = car.price * rental_rate
+        total_price = rental_price_per_day * rental_days
     else:
-        total_price = car.price - (car.price * (car.discount / 100)) if car.discount else car.price
+        if car.discount:
+            total_price = car.price - (car.price * car.discount / 100)
+        else:
+            total_price = car.price
     
     context = {
         'car': car,
@@ -185,12 +220,6 @@ def process_checkout(request):
             car.save()
 
         same_address = request.POST.get('sameadr', False) == 'on'
-        
-        active_rentals = Rental.objects.filter(car=car, is_active=True)
-        for rental in active_rentals:
-            rental.is_active = False
-            rental.rental_end_date = timezone.now()
-            rental.save()
 
         context = {
                 'firstname': firstname,
@@ -208,6 +237,30 @@ def process_checkout(request):
         return render(request, 'success.html', context)
 
     return render(request, 'checkout.html')
+    
+@user_passes_test(lambda u: u.is_superuser)
+def car_history(request, car_id):
+    car = get_object_or_404(Car, pk=car_id)
+    sales = car.sales.all()
+    rentals = car.rentals.all()
+
+    context = {
+        'car': car,
+        'sales': sales,
+        'rentals': rentals
+    }
+    return render(request, 'car_history.html', context)
+    
+@user_passes_test(lambda u: u.is_superuser)
+def rental_history(request):
+    rental_history = Rental.objects.order_by('-rental_start_date')
+    return render(request, 'rental_history.html', {'rental_history': rental_history})
+
+@user_passes_test(lambda u: u.is_superuser)
+def sales_history(request):
+    sales_history = Sale.objects.order_by('-sale_date')
+    return render(request, 'sales_history.html', {'sales_history': sales_history})
+
 
 def home(request):
     id = uuid.uuid4()

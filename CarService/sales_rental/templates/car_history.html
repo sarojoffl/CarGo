@@ -1,0 +1,51 @@
+{% extends "admin_base.html" %}
+{% block content %}
+<h1>History for {{ car.make }} {{ car.model }}</h1>
+
+<div class="history-section">
+    {% if sales.exists %}
+    <h2>Sales History</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Buyer</th>
+                <th>Sale Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr>
+                <td>{{ sale.buyer.username }}</td>
+                <td>{{ sale.sale_date|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+<div class="history-section">
+    {% if rentals.exists %}
+    <h2>Rental History</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Renter</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals %}
+            <tr>
+                <td>{{ rental.renter.username }}</td>
+                <td>{{ rental.rental_start_date|date:"Y-m-d H:i" }}</td>
+                <td>{{ rental.rental_end_date|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
+

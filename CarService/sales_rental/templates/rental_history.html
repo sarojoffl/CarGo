@@ -1,0 +1,31 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <h1>Rental History</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Renter</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rental_history %}
+            <tr>
+                <td>{{ rental.car.make }} {{ rental.car.model }}</td>
+                <td>{{ rental.renter.username }}</td>
+                <td>{{ rental.rental_start_date }}</td>
+                <td>{{ rental.rental_end_date }}</td>
+                <td>{{ rental.is_active|yesno:"Active,Inactive" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+

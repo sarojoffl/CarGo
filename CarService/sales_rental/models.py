@@ -26,7 +26,7 @@ class Car(models.Model):
         return f"{self.make} {self.model} ({self.year})"
 
 class Sale(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, related_name='sales', on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     sale_date = models.DateTimeField(auto_now_add=True)
 
@@ -34,7 +34,7 @@ class Sale(models.Model):
         return f"Sale of {self.car} to {self.buyer}"
 
 class Rental(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, related_name='rentals', on_delete=models.CASCADE)
     renter = models.ForeignKey(User, on_delete=models.CASCADE)
     rental_start_date = models.DateTimeField()
     rental_end_date = models.DateTimeField()
