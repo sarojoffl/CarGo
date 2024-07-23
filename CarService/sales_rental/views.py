@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from decimal import Decimal
+import uuid
+import requests
 
 from .models import Car, Rental, Sale, CarImage
 from .forms import UserForm, CarForm, CarImageFormSet
@@ -34,10 +36,7 @@ def rentals(request):
 def car_detail(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     
-    if car.discount:
-        discounted_price = car.price - (car.price * car.discount / 100)
-    else:
-        discounted_price = car.price
+    discounted_price = car.price - (car.price * car.discount / 100) if car.discount else car.price
     
     context = {
         'car': car,
@@ -45,21 +44,19 @@ def car_detail(request, car_id):
     }
     
     return render(request, 'car_detail.html', context)
-    
+
 @login_required
 def view_watchlist(request):
     user_watchlist = request.user.watchlist.all()
     return render(request, 'watchlist.html', {'watchlist': user_watchlist})
-    
+
 @login_required
 def toggle_watchlist(request, car_id):
     car = get_object_or_404(Car, pk=car_id)
     if car in request.user.watchlist.all():
         request.user.watchlist.remove(car)
-        # messages.success(request, f'{car.make} {car.model} has been removed from your watchlist.')
     else:
         request.user.watchlist.add(car)
-        # messages.success(request, f'{car.make} {car.model} has been added to your watchlist.')
     return redirect('car_detail', car_id=car_id)
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -194,9 +191,8 @@ def process_checkout(request):
     if request.method == 'POST':
         user = request.user
         car_id = request.POST.get('car_id')
-        car = Car.objects.get(pk=car_id)
+        car = get_object_or_404(Car, pk=car_id)
 
-        # Common form data
         firstname = request.POST['firstname']
         email = request.POST['email']
         phone = request.POST['phone']
@@ -205,11 +201,9 @@ def process_checkout(request):
         payment_method = request.POST['paymentMethod']
         transaction_type = request.POST['transaction_type']
 
-        # Different handling based on transaction type
         if transaction_type == 'rent':
             startdate = request.POST['startdate']
             enddate = request.POST['enddate']
-            # Create Rental record
             rental = Rental(
                 car=car,
                 renter=user,
@@ -218,7 +212,6 @@ def process_checkout(request):
                 is_active=True
             )
             rental.save()
-
             car.is_available_for_rent = False
             car.save()
         else:
@@ -229,14 +222,11 @@ def process_checkout(request):
                 sale_date=timezone.now()
             )
             sale.save()
-
             car.is_available_for_sale = False
             car.is_available_for_rent = False
             car.save()
 
         same_address = request.POST.get('sameadr', False) == 'on'
-
-        # Implement your checkout processing logic here
 
         context = {
                 'firstname': firstname,
@@ -251,7 +241,6 @@ def process_checkout(request):
                 'pickupdate': pickupdate if transaction_type == 'sale' else None,
         }                    
         
-        # Redirect to a success page or show a success message
         return render(request, 'success.html', context)
 
     return render(request, 'checkout.html')
@@ -279,3 +268,79 @@ def sales_history(request):
     sales_history = Sale.objects.order_by('-sale_date')
     return render(request, 'sales_history.html', {'sales_history': sales_history})
 
+
+def home(request):
+    id = uuid.uuid4()
+    return render(request, 'khalti.html', {'uuid': id})
+
+def initkhalti(request):
+    if request.method == 'POST':
+        url = "https://a.khalti.com/api/v2/epayment/initiate/"
+        return_url = request.POST.get('return_url')
+        amount = request.POST.get('amount')
+        purchase_order_id = request.POST.get('purchase_order_id')
+        user = request.user
+
+        if not all([return_url, amount, purchase_order_id]):
+            return HttpResponseBadRequest("Missing required parameters")
+
+        payload = {
+            "return_url": return_url,
+            "website_url": "http://127.0.0.1:8000",
+            "amount": amount,
+            "purchase_order_id": purchase_order_id,
+            "purchase_order_name": "test",
+            "customer_info": {
+                "name": user.first_name,
+                "email": user.email,
+                "phone": user.phone_number
+            }
+        }
+
+        headers = {
+            'Authorization': 'Key your_live_secret_key',
+            'Content-Type': 'application/json',
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response_data = response.json()
+
+            if response.status_code == 200 and 'payment_url' in response_data:
+                return redirect(response_data['payment_url'])
+            else:
+                return JsonResponse(response_data, status=response.status_code)
+
+        except requests.RequestException as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return HttpResponseBadRequest("Invalid request method")
+
+def verifyKhalti(request):
+    if request.method == 'GET':
+        url = "https://a.khalti.com/api/v2/epayment/lookup/"
+        pidx = request.GET.get('pidx')
+
+        if not pidx:
+            return HttpResponseBadRequest("Missing required parameters")
+
+        headers = {
+            'Authorization': 'Key your_live_secret_key',
+            'Content-Type': 'application/json',
+        }
+
+        payload = {'pidx': pidx}
+
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response_data = response.json()
+
+            if response.status_code == 200:
+                return JsonResponse(response_data)
+            else:
+                return JsonResponse(response_data, status=response.status_code)
+
+        except requests.RequestException as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return HttpResponseBadRequest("Invalid request method")
