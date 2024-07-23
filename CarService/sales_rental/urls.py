@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 from . import auth_views as custom_auth_views
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -25,5 +24,7 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('checkout/', views.checkout, name='checkout'),
     path('process_checkout/', views.process_checkout, name='process_checkout'),
+    path('home/', views.home, name='home'),
+    path('initiate/', views.initkhalti, name='initiate'),
+    path('verify/', views.verifyKhalti, name='verify'),
 ]
-
