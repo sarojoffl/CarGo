@@ -52,6 +52,7 @@ class PaymentDetails(models.Model):
     transaction_id = models.CharField(max_length=255, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=100)
+    transaction_type = models.CharField(max_length=50)
     is_verified = models.BooleanField(default=False)
     transaction_date = models.DateTimeField(auto_now_add=True)
 
@@ -59,7 +60,6 @@ class PaymentDetails(models.Model):
         return f"{self.user.username} - {self.amount} via {self.payment_method} for {self.car}"
 
 class CarImage(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='car_images/')
     description = models.CharField(max_length=255, blank=True)
 

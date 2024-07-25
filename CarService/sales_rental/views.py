@@ -5,8 +5,8 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from decimal import Decimal
 from django.conf import settings
-from .models import Car, Rental
-from .forms import CarFilterForm
+from .models import Car, Sale, Rental
+from .forms import CarFilterForm, UserForm
 from django.db import models
 from datetime import datetime
 from urllib.parse import urlencode
@@ -25,6 +25,7 @@ def search(request):
         results = Car.objects.filter(
             models.Q(model__icontains=query) |
             models.Q(make__icontains=query) |
+            models.Q(year__icontains=query) |
             models.Q(description__icontains=query)
         )
         
@@ -83,4 +84,21 @@ def toggle_watchlist(request, car_id):
     else:
         request.user.watchlist.add(car)
     return redirect('car_detail', car_id=car_id)
+
+@login_required
+def user_history(request):
+    user_sales = Sale.objects.filter(buyer=request.user)
+    user_rentals = Rental.objects.filter(renter=request.user)
+    return render(request, 'user_history.html', {'user_sales': user_sales, 'user_rentals': user_rentals})
+
+@login_required
+def manage_profile(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_profile')
+    else:
+        form = UserForm(instance=request.user)
+    return render(request, 'manage_profile.html', {'form': form})
 

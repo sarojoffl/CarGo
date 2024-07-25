@@ -4,32 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Changed from center to flex-start */
+            min-height: 100vh; /* Ensure body takes full height */
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            padding-top: 6rem; /* Increased padding-top */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem; /* Added margin-top */
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .transaction-details {
+            margin-top: 2rem;
+        }
+
+        .transaction-details h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .transaction-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .transaction-details ul li {
+            background: #f2f2f2;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .actions a, .actions button {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: #4CAF50;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            width: 48%;
+            box-sizing: border-box;
+            border: none;
+        }
+
+        .actions a:hover, .actions button:hover {
+            background: #45a049;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                height: auto;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .actions {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Payment Successful!</h1>
-    <p>Thank you, {{ firstname }}. Your payment was successful.</p>
-    <div>
-        <h2>Transaction Details</h2>
-        <ul>
-            <li>Email: {{ email }}</li>
-            <li>Phone: {{ phone }}</li>
-            <li>Address: {{ address }}, {{ city }}</li>
-            <li>Payment Method: {{ payment_method }}</li>
-            <li>Transaction Type: {{ transaction_type }}</li>
-            {% if same_address %}
-                <li>Billing address is the same as shipping address.</li>
-            {% endif %}
-            {% if transaction_type == "rent" %}
-                <li>Rental Start Date: {{ startdate }}</li>
-                <li>Rental End Date: {{ enddate }}</li>
-            {% else %}
-                <li>Pick-up Date: {{ pickupdate }}</li>
-            {% endif %}
-            <li>Amount Paid: {{ total_price }}</li>
-            <li>Transaction ID: {{ transaction_id }}</li>
-        </ul>
+    <div class="container">
+        <h1>Payment Successful!</h1>
+        <p>Thank you, {{ firstname }}. Your payment was successful.</p>
+        <div class="transaction-details">
+            <h2>Transaction Details</h2>
+            <ul>
+                <li><strong>Car Model:</strong> {{ car_model }}</li>
+                <li><strong>Car Make:</strong> {{ car_make }}</li>
+                <li><strong>Car Year:</strong> {{ car_year }}</li>
+                <li><strong>Transaction Type:</strong> {{ transaction_type }}</li>
+                <li><strong>Amount Paid:</strong> {{ total_price }}</li>
+                <li><strong>Transaction ID:</strong> {{ transaction_id }}</li>
+                <li><strong>Payment Method:</strong> {{ payment_method }}</li>
+                <li><strong>Email:</strong> {{ email }}</li>
+                <li><strong>Phone:</strong> {{ phone }}</li>
+                <li><strong>Address:</strong> {{ address }}, {{ city }}</li>
+                {% if same_address %}
+                    <li>Billing address is the same as shipping address.</li>
+                {% endif %}
+                {% if transaction_type == "rent" %}
+                    <li><strong>Rental Start Date:</strong> {{ startdate }}</li>
+                    <li><strong>Rental End Date:</strong> {{ enddate }}</li>
+                {% else %}
+                    <li><strong>Pick-up Date:</strong> {{ pickupdate }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="actions">
+            <a href="{% url 'index' %}">Return to Home</a>
+            <button onclick="window.print()">Print / Save as PDF</button>
+        </div>
+        <div class="support">
+            <p>If you have any issues, please contact our <a href="mailto:cargonepal2024@gmail.com">customer support</a>.</p>
+        </div>
     </div>
-    <a href="{% url 'index' %}">Return to Home</a>
 </body>
 </html>
 

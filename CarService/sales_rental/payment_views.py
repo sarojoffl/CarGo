@@ -148,6 +148,7 @@ def verifyKhalti(request):
                     transaction_id=transaction_id,
                     amount=amount,
                     payment_method='Khalti',
+                    transaction_type=transaction_type,
                     is_verified=True
                 )
                 payment_details.save()
@@ -170,7 +171,10 @@ def verifyKhalti(request):
                     'startdate': request.session.get('startdate', None),
                     'enddate': request.session.get('enddate', None),
                     'pickupdate': request.session.get('pickupdate', None),
-                    'transaction_id': transaction_id
+                    'transaction_id': transaction_id,
+                    'car_model': car.model,
+                    'car_make': car.make,
+                    'car_year': car.year,
                 }
 
                 return render(request, 'success.html', context)

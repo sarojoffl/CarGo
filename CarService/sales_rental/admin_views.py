@@ -14,11 +14,12 @@ def car_create(request):
         formset = CarImageFormSet(request.POST, request.FILES, queryset=CarImage.objects.none())
         if form.is_valid() and formset.is_valid():
             car = form.save()
-            for form in formset.cleaned_data:
-                if form:
-                    image = form['image']
-                    description = form.get('description', '')
-                    CarImage.objects.create(image=image, description=description, car=car)
+            for image_form in formset:
+                if image_form.cleaned_data:
+                    image = image_form.cleaned_data.get('image')
+                    description = image_form.cleaned_data.get('description', '')
+                    car_image = CarImage.objects.create(image=image, description=description)
+                    car.images.add(car_image)
             return redirect('car_list')
     else:
         form = CarForm()

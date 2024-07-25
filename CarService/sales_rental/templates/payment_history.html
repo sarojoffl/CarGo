@@ -13,6 +13,7 @@
                 <th>Transaction ID</th>
                 <th>Amount</th>
                 <th>Payment Method</th>
+                <th>Transaction Type</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ payment.transaction_id }}</td>
                 <td>${{ payment.amount|floatformat:2 }}</td>
                 <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.transaction_type }}</td> 
                 <td>{{ payment.transaction_date }}</td>
             </tr>
             {% endfor %}
