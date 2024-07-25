@@ -141,6 +141,7 @@ def verifyKhalti(request):
                 
                 purchase_order_id = request.session.get('car_id')
                 car = Car.objects.get(id=purchase_order_id)
+                transaction_type = request.session.get('transaction_type')
                 
                 payment_details = PaymentDetails(
                     user=user,
@@ -153,9 +154,6 @@ def verifyKhalti(request):
                 )
                 payment_details.save()
 
-                purchase_order_id = request.session.get('car_id')
-                car = Car.objects.get(id=purchase_order_id)
-                transaction_type = request.session.get('transaction_type')
                 update_database_after_payment(transaction_type, car, user, request.session)
 
                 context = {
