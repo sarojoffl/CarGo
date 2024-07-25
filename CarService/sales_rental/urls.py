@@ -30,6 +30,7 @@ urlpatterns = [
     path('user/<int:user_id>/edit/', admin_views.user_edit, name='user_edit'),
     path('user/<int:user_id>/delete/', admin_views.user_delete, name='user_delete'),
     path('admin_dashboard/', admin_views.admin_dashboard, name='admin_dashboard'),
+    path('payment-history/', admin_views.payment_history, name='payment_history'),
     path('checkout/', payment_views.checkout, name='checkout'),
     path('process_checkout/', payment_views.process_checkout, name='process_checkout'),
     path('initiate/', payment_views.initkhalti, name='initiate'),

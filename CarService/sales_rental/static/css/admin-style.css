@@ -227,19 +227,39 @@ main {
     padding: 2rem;
 }
 
-main .stats-table {
+main .stats-table, main .history-table, table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 2rem;
+    background-color: var(--color-white);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-border-radius);
+    overflow: hidden; /* Ensures border radius is applied */
 }
 
-main .stats-table th, .stats-table td {
+main .stats-table th, main .stats-table td,
+main .history-table th, main .history-table td,
+table th, table td {
     text-align: center;
     padding: 1rem;
-    background-color: var(--color-white);
     border: 1px solid var(--color-light);
-    border-radius: var(--card-border-radius);
-    box-shadow: var(--box-shadow);
+}
+
+main .stats-table th, main .history-table th, table th {
+    background-color: var(--color-background);
+    font-weight: 600;
+}
+
+main .stats-table td, main .history-table td, table td {
+    background-color: var(--color-white);
+}
+
+main .history-table tr:nth-child(even) td, table tr:nth-child(even) td {
+    background-color: var(--color-light);
+}
+
+main .history-table tr:hover td, table tr:hover td {
+    background-color: var(--color-background);
 }
 
 main .user-list {
@@ -261,30 +281,6 @@ main .user-item {
 main .user-item h3 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-}
-
-main .history-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1.5rem;
-}
-
-main .history-table th, main .history-table td {
-    border: 1px solid var(--color-light);
-    padding: 0.8rem;
-    text-align: left;
-}
-
-main .history-table th {
-    background-color: var(--color-background);
-}
-
-main .history-table tr:nth-child(even) {
-    background-color: var(--color-light);
-}
-
-main .history-table tr:hover {
-    background-color: var(--color-background);
 }
 
 .btn {

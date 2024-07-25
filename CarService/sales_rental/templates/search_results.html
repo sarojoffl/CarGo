@@ -2,6 +2,39 @@
 
 {% block content %}
 <h1>Search Results for "{{ query }}"</h1>
+        
+    <form method="get" action="{% url 'search' %}">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="q">Search:</label>
+                <input type="text" id="q" name="q" value="{{ query }}">
+            </div>
+            <div class="form-group" style="flex-grow: 0;">
+                <button type="submit">Search</button>
+            </div>
+            <div class="form-group" style="flex-grow: 0;">
+                <button type="button" id="toggle-advanced-search">Show Advanced Filters</button>
+            </div>
+        </div>
+        <div id="advanced-search" class="form-row">
+            <div class="form-group">
+                {{ form.make.label_tag }} {{ form.make }}
+            </div>
+            <div class="form-group">
+                {{ form.model.label_tag }} {{ form.model }}
+            </div>
+            <div class="form-group">
+                {{ form.year.label_tag }} {{ form.year }}
+            </div>
+            <div class="form-group">
+                {{ form.min_price.label_tag }} {{ form.min_price }}
+            </div>
+            <div class="form-group">
+                {{ form.max_price.label_tag }} {{ form.max_price }}
+            </div>
+        </div>
+    </form>
+
 {% if query %}
     {% if results %}
         <ul>
@@ -15,4 +48,23 @@
 {% else %}
     <p>Please enter a search term.</p>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleButton = document.getElementById("toggle-advanced-search");
+        const advancedSearch = document.getElementById("advanced-search");
+
+        toggleButton.addEventListener("click", function() {
+            if (advancedSearch.style.display === "none") {
+                advancedSearch.style.display = "block";
+                toggleButton.textContent = "Hide Advanced Filters";
+            } else {
+                advancedSearch.style.display = "none";
+                toggleButton.textContent = "Show Advanced Filters";
+            }
+        });
+    });
+</script>
 {% endblock %}

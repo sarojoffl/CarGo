@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model
 from decimal import Decimal
 from django.conf import settings
 from .models import Car, Rental
+from .forms import CarFilterForm
+from django.db import models
 from datetime import datetime
 from urllib.parse import urlencode
 
@@ -16,10 +18,29 @@ def index(request):
 
 def search(request):
     query = request.GET.get('q')
-    results = []
+    results = Car.objects.none()
+    form = CarFilterForm(request.GET)
+    
     if query:
-        results = Car.objects.filter(model__icontains=query) | Car.objects.filter(make__icontains=query) | Car.objects.filter(description__icontains=query)
-    return render(request, 'search_results.html', {'results': results, 'query': query})
+        results = Car.objects.filter(
+            models.Q(model__icontains=query) |
+            models.Q(make__icontains=query) |
+            models.Q(description__icontains=query)
+        )
+        
+    if form.is_valid():
+        if form.cleaned_data['make']:
+            results = results.filter(make__icontains=form.cleaned_data['make'])
+        if form.cleaned_data['model']:
+            results = results.filter(model__icontains=form.cleaned_data['model'])
+        if form.cleaned_data['year']:
+            results = results.filter(year=form.cleaned_data['year'])
+        if form.cleaned_data['min_price']:
+            results = results.filter(price__gte=form.cleaned_data['min_price'])
+        if form.cleaned_data['max_price']:
+            results = results.filter(price__lte=form.cleaned_data['max_price'])
+
+    return render(request, 'search_results.html', {'results': results, 'query': query, 'form': form})
     
 def sales(request):
     cars_for_sale = Car.objects.filter(is_available_for_sale=True)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test
 from .forms import CarForm, CarImageFormSet, UserForm
-from .models import Car, CarImage, Rental, Sale
+from .models import Car, CarImage, Rental, Sale, PaymentDetails
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
@@ -30,7 +30,7 @@ def car_update(request, car_id):
     car = get_object_or_404(Car, pk=car_id)
     if request.method == "POST":
         form = CarForm(request.POST, instance=car)
-        formset = CarImageFormSet(request.POST, request.FILES, queryset=CarImage.objects.filter(car=car))
+        formset = CarImageFormSet(request.POST, request.FILES, queryset=CarImage.objects.filter(cars=car))
         if form.is_valid() and formset.is_valid():
             car = form.save()
             for image_form in formset:
@@ -43,11 +43,11 @@ def car_update(request, car_id):
                         image_instance = image_form.save(commit=False)
                         image_instance.description = description
                         image_instance.save()
-                        image_instance.car.add(car)
+                        image_instance.cars.add(car)
             return redirect('car_list')
     else:
         form = CarForm(instance=car)
-        formset = CarImageFormSet(queryset=CarImage.objects.filter(car=car))
+        formset = CarImageFormSet(queryset=CarImage.objects.filter(cars=car))
     return render(request, 'car_form.html', {'form': form, 'formset': formset})
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -134,3 +134,8 @@ def rental_history(request):
 def sales_history(request):
     sales_history = Sale.objects.order_by('-sale_date')
     return render(request, 'sales_history.html', {'sales_history': sales_history})
+
+@user_passes_test(lambda u: u.is_superuser)
+def payment_history(request):
+    payments = PaymentDetails.objects.all()
+    return render(request, 'payment_history.html', {'payments': payments})

@@ -9,6 +9,13 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
 
+class CarFilterForm(forms.Form):
+    make = forms.CharField(required=False, label='Make')
+    model = forms.CharField(required=False, label='Model')
+    year = forms.IntegerField(required=False, label='Year')
+    min_price = forms.DecimalField(required=False, min_value=0, label='Min Price')
+    max_price = forms.DecimalField(required=False, min_value=0, label='Max Price')
+
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car

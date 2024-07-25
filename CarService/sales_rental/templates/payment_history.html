@@ -1,0 +1,34 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Payment History{% endblock %}
+
+{% block content %}
+<main>
+    <h1>Payment History</h1>
+    <table class="stats-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Car</th>
+                <th>Transaction ID</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.user.username }}</td>
+                <td>{{ payment.car.make }} {{ payment.car.model }}</td>
+                <td>{{ payment.transaction_id }}</td>
+                <td>${{ payment.amount|floatformat:2 }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.transaction_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+
