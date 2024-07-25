@@ -59,6 +59,7 @@ class PaymentDetails(models.Model):
         return f"{self.user.username} - {self.amount} via {self.payment_method} for {self.car}"
 
 class CarImage(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='car_images/')
     description = models.CharField(max_length=255, blank=True)
 
