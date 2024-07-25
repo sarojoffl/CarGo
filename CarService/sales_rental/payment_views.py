@@ -99,7 +99,7 @@ def initkhalti(request):
         }
 
         headers = {
-            'Authorization': f'Key {settings.KHALTI_SECRET_KEY}',
+            'Authorization': "Key c54d590299d843a788b6bd49ff6da91d",
             'Content-Type': 'application/json',
         }
 
@@ -124,7 +124,7 @@ def verifyKhalti(request):
             return HttpResponseBadRequest("Missing required parameters")
 
         headers = {
-            "Authorization": f'Key {settings.KHALTI_SECRET_KEY}',
+            "Authorization": "Key c54d590299d843a788b6bd49ff6da91d",
             'Content-Type': 'application/json',
         }
 
