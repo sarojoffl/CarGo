@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sales_rental',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
