@@ -21,6 +21,21 @@
         </table>
     </section>
 
+
+    <section class="revenue-statistics">
+        <h2>Revenue Statistics</h2>
+        <table class="stats-table">
+            <tr>
+                <th>Total Sales Amount</th>
+                <th>Total Rentals Amount</th>
+            </tr>
+            <tr>
+                <td>${{ total_sales_amount }}</td>
+                <td>${{ total_rentals_amount }}</td>
+            </tr>
+        </table>
+    </section>
+
     <section class="new-users">
         <h2>New Users</h2>
         <div class="user-list">
@@ -30,12 +45,13 @@
                 <p>{{ user.date_joined|timesince }} ago</p>
             </div>
             {% endfor %}
-            <div class="user">
+            <div class="user-item">
                 <a href="{% url 'user_list' %}">View All Users</a>
             </div>
         </div>
     </section>
     
+    {% if recent_rentals %}
     <section class="recent-rentals">
         <h2>Recent Rentals</h2>
         <table>
@@ -45,6 +61,7 @@
                     <th>Renter</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Amount</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -55,6 +72,7 @@
                     <td>{{ rental.renter.username }}</td>
                     <td>{{ rental.rental_start_date }}</td>
                     <td>{{ rental.rental_end_date }}</td>
+                    <td>${{ rental.amount|floatformat:2 }}</td>
                     <td>{{ rental.is_active|yesno:"Active,Inactive" }}</td>
                 </tr>
                 {% endfor %}
@@ -62,7 +80,9 @@
         </table>
         <a href="{% url 'rental_history' %}" class="btn btn-secondary">View All Rentals</a>
     </section>
+    {% endif %}
     
+    {% if recent_sales %}
     <section class="recent-sales">
         <h2>Recent Sales</h2>
         <table>
@@ -71,6 +91,7 @@
                     <th>Car</th>
                     <th>Buyer</th>
                     <th>Date</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,12 +100,14 @@
                     <td>{{ sale.car.make }} {{ sale.car.model }}</td>
                     <td>{{ sale.buyer.username }}</td>
                     <td>{{ sale.sale_date }}</td>
+                    <td>${{ sale.amount|floatformat:2 }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <a href="{% url 'sales_history' %}" class="btn btn-secondary">View All Sales</a>
     </section>
+    {% endif %}
 </main>
 {% endblock %}
 

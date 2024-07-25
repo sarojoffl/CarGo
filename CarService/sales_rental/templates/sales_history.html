@@ -10,6 +10,7 @@
                 <th>Car</th>
                 <th>Buyer</th>
                 <th>Date</th>
+                <th>Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -18,6 +19,7 @@
                 <td>{{ sale.car.make }} {{ sale.car.model }}</td>
                 <td>{{ sale.buyer.username }}</td>
                 <td>{{ sale.sale_date }}</td>
+                <td>${{ sale.amount|floatformat:2 }}</td>
             </tr>
             {% endfor %}
         </tbody>

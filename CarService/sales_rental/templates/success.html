@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Success</title>
+    <title>Payment Success</title>
 </head>
 <body>
-    <h1>Transaction Successful!</h1>
-    <p>Thank you, {{ firstname }}. Your transaction has been processed successfully.</p>
+    <h1>Payment Successful!</h1>
+    <p>Thank you, {{ firstname }}. Your payment was successful.</p>
     <div>
         <h2>Transaction Details</h2>
-        <p>Email: {{ email }}</p>
-        <p>Phone: {{ phone }}</p>
-        <p>Address: {{ address }}, {{ city }}</p>
-        <p>Payment Method: {{ payment_method }}</p>
-        <p>Transaction Type: {{ transaction_type }}</p>
-        {% if same_address %}
-            <p>Billing address is the same as shipping address.</p>
-        {% endif %}
-        {% if transaction_type == "rent" %}
-            <p>Rental Start Date: {{ startdate }}</p>
-            <p>Rental End Date: {{ enddate }}</p>
-        {% else %}
-            <p>Pick-up Date: {{ pickupdate }}</p>
-        {% endif %}
+        <ul>
+            <li>Email: {{ email }}</li>
+            <li>Phone: {{ phone }}</li>
+            <li>Address: {{ address }}, {{ city }}</li>
+            <li>Payment Method: {{ payment_method }}</li>
+            <li>Transaction Type: {{ transaction_type }}</li>
+            {% if same_address %}
+                <li>Billing address is the same as shipping address.</li>
+            {% endif %}
+            {% if transaction_type == "rent" %}
+                <li>Rental Start Date: {{ startdate }}</li>
+                <li>Rental End Date: {{ enddate }}</li>
+            {% else %}
+                <li>Pick-up Date: {{ pickupdate }}</li>
+            {% endif %}
+            <li>Amount Paid: {{ total_price }}</li>
+            <li>Transaction ID: {{ transaction_id }}</li>
+        </ul>
     </div>
     <a href="{% url 'index' %}">Return to Home</a>
 </body>

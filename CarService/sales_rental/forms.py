@@ -7,7 +7,7 @@ User = get_user_model()
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
 
 class CarForm(forms.ModelForm):
     class Meta:

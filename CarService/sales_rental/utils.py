@@ -4,6 +4,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from decimal import Decimal
+from .models import Rental, Sale, Car
+from datetime import datetime
+from django.utils import timezone
 
 def generate_otp():
     """
@@ -49,4 +53,31 @@ def is_password_valid(password):
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
         return False, "Password must contain at least one special character."
     return True, ""
+
+def update_database_after_payment(transaction_type, car, user, session):
+    amount = Decimal(session['total_price'])
+    
+    if transaction_type == 'rent':
+        rental = Rental(
+            car=car,
+            renter=user,
+            rental_start_date=datetime.strptime(session['startdate'], '%Y-%m-%dT%H:%M'),
+            rental_end_date=datetime.strptime(session['enddate'], '%Y-%m-%dT%H:%M'),
+            amount=amount,
+            is_active=True
+        )
+        rental.save()
+        car.is_available_for_rent = False
+    else:
+        sale = Sale(
+            car=car,
+            buyer=user,
+            sale_date=timezone.now(),
+            amount=amount
+        )
+        sale.save()
+        car.is_available_for_sale = False
+        car.is_available_for_rent = False
+    
+    car.save()
 

@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from . import auth_views as custom_auth_views
+from . import admin_views
+from . import payment_views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -17,20 +19,19 @@ urlpatterns = [
     path('watchlist/', views.view_watchlist, name='view_watchlist'),
     path('toggle_watchlist/<int:car_id>/', views.toggle_watchlist, name='toggle_watchlist'),
     path('car/<int:car_id>/', views.car_detail, name='car_detail'),
-    path('cars/add/', views.car_create, name='car_create'),
-    path('cars/<int:car_id>/edit/', views.car_update, name='car_update'),
-    path('cars/<int:car_id>/delete/', views.car_delete, name='car_delete'),
-    path('cars/', views.car_list, name='car_list'),
-    path('car_history/<int:car_id>/', views.car_history, name='car_history'),
-    path('rental_history/', views.rental_history, name='rental_history'),
-    path('sales_history/', views.sales_history, name='sales_history'),
-    path('users/', views.user_list, name='user_list'),
-    path('user/<int:user_id>/edit/', views.user_edit, name='user_edit'),
-    path('user/<int:user_id>/delete/', views.user_delete, name='user_delete'),
-    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('checkout/', views.checkout, name='checkout'),
-    path('process_checkout/', views.process_checkout, name='process_checkout'),
-    path('home/', views.home, name='home'),
-    path('initiate/', views.initkhalti, name='initiate'),
-    path('verify/', views.verifyKhalti, name='verify'),
+    path('cars/add/', admin_views.car_create, name='car_create'),
+    path('cars/<int:car_id>/edit/', admin_views.car_update, name='car_update'),
+    path('cars/<int:car_id>/delete/', admin_views.car_delete, name='car_delete'),
+    path('cars/', admin_views.car_list, name='car_list'),
+    path('car_history/<int:car_id>/', admin_views.car_history, name='car_history'),
+    path('rental_history/', admin_views.rental_history, name='rental_history'),
+    path('sales_history/', admin_views.sales_history, name='sales_history'),
+    path('users/', admin_views.user_list, name='user_list'),
+    path('user/<int:user_id>/edit/', admin_views.user_edit, name='user_edit'),
+    path('user/<int:user_id>/delete/', admin_views.user_delete, name='user_delete'),
+    path('admin_dashboard/', admin_views.admin_dashboard, name='admin_dashboard'),
+    path('checkout/', payment_views.checkout, name='checkout'),
+    path('process_checkout/', payment_views.process_checkout, name='process_checkout'),
+    path('initiate/', payment_views.initkhalti, name='initiate'),
+    path('verify/', payment_views.verifyKhalti, name='verify'),
 ]

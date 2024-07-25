@@ -53,13 +53,11 @@
             <input type="text" id="city" name="city" placeholder="Balkumari" required>
         </div>
         
-
           <div class="col-50">
             <h3>Payment</h3>
             <label for="paymentMethod">Payment Method</label>
             <select id="paymentMethod" name="paymentMethod" required>
               <option value="khalti">Khalti</option>
-              <option value="cash">Cash</option>
             </select>
 
             {% if transaction_type == "rent" %}

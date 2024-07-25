@@ -63,12 +63,6 @@
                 <h3>{{ car.make }}</h3>
                 <h1>{{ car.model }}</h1>
                 <p>{{ car.description }}</p>
-                <label for="color">Color</label>
-                <select id="color" name="color">
-                    {% for color in car.colors.all %}
-                        <option value="{{ color.color }}">{{ color.color }}</option>
-                    {% endfor %}
-                </select>
                 <div class="price-description">
                     {% if car.discount %}
                         <h2>${{ discounted_price|floatformat:2 }}</h2>
@@ -78,6 +72,17 @@
                         <h2>${{ car.price|floatformat:2 }}</h2>
                     {% endif %}
                 </div>
+                 
+                {% if is_sold %}
+                    <div class="alert alert-danger" role="alert">
+                        This car is sold.
+                    </div>
+                {% elif is_rented %}
+                    <div class="alert alert-warning" role="alert">
+                        This car is currently rented and will be available after {{ current_rental.rental_end_date }}.
+                    </div>
+                {% endif %}
+                
                 <div class="cart-function">
                     {% if car.is_available_for_sale %}
                         <button id="buy-now-btn" class="btn btn-primary" data-url="{% url 'checkout' %}" data-type="sale" data-car-id="{{ car.id }}">
