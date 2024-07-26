@@ -3,20 +3,21 @@
 {% block content %}
 <h1>Search Results for "{{ query }}"</h1>
         
-    <form method="get" action="{% url 'search' %}">
-        <div class="form-row">
-            <div class="form-group">
-                <label for="q">Search:</label>
-                <input type="text" id="q" name="q" value="{{ query }}">
-            </div>
-            <div class="form-group" style="flex-grow: 0;">
-                <button type="submit">Search</button>
-            </div>
-            <div class="form-group" style="flex-grow: 0;">
-                <button type="button" id="toggle-advanced-search">Show Advanced Filters</button>
-            </div>
+<form method="get" action="{% url 'search' %}" class="search-form">
+    <div class="form-row">
+        <div class="form-group">
+            <label for="q">Search:</label>
+            <input type="text" id="q" name="q" value="{{ query }}">
         </div>
-        <div id="advanced-search" class="form-row">
+        <div class="form-group" style="flex-grow: 0;">
+            <button type="submit">Search</button>
+        </div>
+        <div class="form-group" style="flex-grow: 0;">
+            <button type="button" id="toggle-advanced-search">Show Advanced Filters</button>
+        </div>
+    </div>
+    <div id="advanced-search" class="advanced-search">
+        <div class="form-row">
             <div class="form-group">
                 {{ form.make.label_tag }} {{ form.make }}
             </div>
@@ -33,20 +34,21 @@
                 {{ form.max_price.label_tag }} {{ form.max_price }}
             </div>
         </div>
-    </form>
+    </div>
+</form>
 
 {% if query %}
     {% if results %}
-        <ul>
+        <ul class="results-list">
         {% for car in results %}
             <li><a href="{% url 'car_detail' car.id %}">{{ car.make }} {{ car.model }} - {{ car.year }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
-        <p>No results found.</p>
+        <p class="empty-state">No results found.</p>
     {% endif %}
 {% else %}
-    <p>Please enter a search term.</p>
+    <p class="empty-state">Please enter a search term.</p>
 {% endif %}
 {% endblock %}
 
