@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if watchlist %}
-<ul>
-    {% for car in watchlist %}
-    <li>
-        <a href="{% url 'car_detail' car.id %}">{{ car }}</a>
-        <form action="{% url 'toggle_watchlist' car.id %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit">Remove from Watchlist</button>
-        </form>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-    <p>Your watchlist is empty.</p>
-{% endif %}
+<div class="watchlist-container">
+    <h2>Your Watchlist</h2>
+    {% if watchlist %}
+    <ul>
+        {% for car in watchlist %}
+        <li>
+            <a href="{% url 'car_detail' car.id %}">{{ car }}</a>
+            <form action="{% url 'toggle_watchlist' car.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Remove from Watchlist</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>Your watchlist is empty.</p>
+    {% endif %}
+</div>
 {% endblock %}

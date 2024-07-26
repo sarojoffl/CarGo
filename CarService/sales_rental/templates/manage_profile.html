@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<main class="manage-profile">
   <h1>Manage Profile</h1>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <fieldset>
+      {{ form.as_p }}
+    </fieldset>
     <button type="submit">Save changes</button>
   </form>
+</main>
 {% endblock %}
-

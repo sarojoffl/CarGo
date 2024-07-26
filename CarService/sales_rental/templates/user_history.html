@@ -1,23 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<main class="user-history">
   <h1>User History</h1>
-  <h2>Sales History</h2>
-  <ul>
-    {% for sale in user_sales %}
-      <li>{{ sale.car.make }} {{ sale.car.model }} - Sold for Rs. {{ sale.amount }} on {{ sale.sale_date }}</li>
-    {% empty %}
-      <li>No sales history.</li>
-    {% endfor %}
-  </ul>
   
-  <h2>Rental History</h2>
-  <ul>
-    {% for rental in user_rentals %}
-      <li>{{ rental.car.make }} {{ rental.car.model }} - Rented from {{ rental.rental_start_date }} to {{ rental.rental_end_date }} for Rs. {{ rental.amount }}</li>
-    {% empty %}
-      <li>No rental history.</li>
-    {% endfor %}
-  </ul>
+  <section>
+    <h2>Sales History</h2>
+    <ul>
+      {% for sale in user_sales %}
+        <li>
+          <p>{{ sale.car.make }} {{ sale.car.model }} - Sold for Rs. <span class="amount">{{ sale.amount }}</span> on {{ sale.sale_date }}</p>
+        </li>
+      {% empty %}
+        <li class="no-history">No sales history.</li>
+      {% endfor %}
+    </ul>
+  </section>
+  
+  <section>
+    <h2>Rental History</h2>
+    <ul>
+      {% for rental in user_rentals %}
+        <li>
+          <p>{{ rental.car.make }} {{ rental.car.model }} - Rented from {{ rental.rental_start_date }} to {{ rental.rental_end_date }} for Rs. <span class="amount">{{ rental.amount }}</span></p>
+        </li>
+      {% empty %}
+        <li class="no-history">No rental history.</li>
+      {% endfor %}
+    </ul>
+  </section>
+</main>
 {% endblock %}
-
