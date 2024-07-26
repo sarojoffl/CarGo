@@ -9,7 +9,7 @@
             <div class="car-item">
                 <h3>{{ car.make }} {{ car.model }} ({{ car.year }})</h3>
                 <p>{{ car.description }}</p>
-                <p>${{ car.price }}</p>
+                <p>Rs. {{ car.price }}</p>
                 <a href="{% url 'car_detail' car.id %}">
                     <button class="btn">View Details</button>
                 </a>

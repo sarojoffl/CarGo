@@ -23,7 +23,7 @@
                 <td>{{ payment.user.username }}</td>
                 <td>{{ payment.car.make }} {{ payment.car.model }}</td>
                 <td>{{ payment.transaction_id }}</td>
-                <td>${{ payment.amount|floatformat:2 }}</td>
+                <td>Rs. {{ payment.amount|floatformat:2 }}</td>
                 <td>{{ payment.payment_method }}</td>
                 <td>{{ payment.transaction_type }}</td> 
                 <td>{{ payment.transaction_date }}</td>

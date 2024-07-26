@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.urls import reverse
@@ -97,6 +98,7 @@ def manage_profile(request):
         form = UserForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            messages.success(request, "Profile updated successfully.")
             return redirect('manage_profile')
     else:
         form = UserForm(instance=request.user)

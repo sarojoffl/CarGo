@@ -65,11 +65,11 @@
                 <p>{{ car.description }}</p>
                 <div class="price-description">
                     {% if car.discount %}
-                        <h2>${{ discounted_price|floatformat:2 }}</h2>
+                        <h2>Rs. {{ discounted_price|floatformat:2 }}</h2>
                         <h4>{{ car.discount }}% off</h4>
-                        <h5><strike>${{ car.price|floatformat:2 }}</strike></h5>
+                        <h5><strike>Rs. {{ car.price|floatformat:2 }}</strike></h5>
                     {% else %}
-                        <h2>${{ car.price|floatformat:2 }}</h2>
+                        <h2>Rs. {{ car.price|floatformat:2 }}</h2>
                     {% endif %}
                 </div>
                  

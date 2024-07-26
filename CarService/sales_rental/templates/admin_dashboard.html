@@ -30,8 +30,8 @@
                 <th>Total Rentals Amount</th>
             </tr>
             <tr>
-                <td>${{ total_sales_amount }}</td>
-                <td>${{ total_rentals_amount }}</td>
+                <td>Rs. {{ total_sales_amount }}</td>
+                <td>Rs. {{ total_rentals_amount }}</td>
             </tr>
         </table>
     </section>
@@ -72,7 +72,7 @@
                     <td>{{ rental.renter.username }}</td>
                     <td>{{ rental.rental_start_date }}</td>
                     <td>{{ rental.rental_end_date }}</td>
-                    <td>${{ rental.amount|floatformat:2 }}</td>
+                    <td>Rs. {{ rental.amount|floatformat:2 }}</td>
                     <td>{{ rental.is_active|yesno:"Active,Inactive" }}</td>
                 </tr>
                 {% endfor %}
@@ -100,7 +100,7 @@
                     <td>{{ sale.car.make }} {{ sale.car.model }}</td>
                     <td>{{ sale.buyer.username }}</td>
                     <td>{{ sale.sale_date }}</td>
-                    <td>${{ sale.amount|floatformat:2 }}</td>
+                    <td>Rs. {{ sale.amount|floatformat:2 }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,6 +1,6 @@
 {% extends "admin_base.html" %}
 {% block content %}
-<h1>History for {{ car.make }} {{ car.model }}</h1>
+<h1>History for {{ user.username }}</h1>
 
 <div class="history-section">
     {% if sales.exists %}
@@ -8,7 +8,7 @@
     <table>
         <thead>
             <tr>
-                <th>Buyer</th>
+                <th>Car</th>
                 <th>Sale Date</th>
                 <th>Amount</th>
             </tr>
@@ -16,7 +16,7 @@
         <tbody>
             {% for sale in sales %}
             <tr>
-                <td>{{ sale.buyer.username }}</td>
+                <td>{{ sale.car.make }} {{ sale.car.model }}</td>
                 <td>{{ sale.sale_date|date:"Y-m-d H:i" }}</td>
                 <td>Rs. {{ sale.amount|floatformat:2 }}</td>
             </tr>
@@ -32,7 +32,7 @@
     <table>
         <thead>
             <tr>
-                <th>Renter</th>
+                <th>Car</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Amount</th>
@@ -42,7 +42,7 @@
         <tbody>
             {% for rental in rentals %}
             <tr>
-                <td>{{ rental.renter.username }}</td>
+                <td>{{ rental.car.make }} {{ rental.car.model }}</td>
                 <td>{{ rental.rental_start_date|date:"Y-m-d H:i" }}</td>
                 <td>{{ rental.rental_end_date|date:"Y-m-d H:i" }}</td>
                 <td>Rs. {{ rental.amount|floatformat:2 }}</td>

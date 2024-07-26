@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.urls import reverse
@@ -23,6 +24,42 @@ def checkout(request):
     rental_rate = Decimal('0.01') if transaction_type == 'rent' else None
     rental_price_per_day = car.price * rental_rate if transaction_type == 'rent' else None
     total_price = rental_price_per_day * rental_days if transaction_type == 'rent' else car.price - (car.price * car.discount / 100) if car.discount else car.price
+
+    if request.method == 'POST':
+        current_time = timezone.now()
+
+        if transaction_type == 'rent':
+            start_date_str = request.POST.get('startdate')
+            end_date_str = request.POST.get('enddate')
+            
+            try:
+                start_date = timezone.datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+                end_date = timezone.datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M')
+            except ValueError:
+                messages.error(request, "Invalid date format.")
+                return redirect(request.path)
+
+            if start_date < current_time:
+                messages.error(request, "Start date cannot be before the current time.")
+                return redirect(request.path)
+
+            if end_date < start_date:
+                messages.error(request, "End date cannot be before the start date.")
+                return redirect(request.path)
+
+        else:
+            pick_up_date_str = request.POST.get('pickupdate')
+            
+            try:
+                pick_up_date = timezone.datetime.strptime(pick_up_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                messages.error(request, "Invalid date format.")
+                return redirect(request.path)
+
+            if pick_up_date < current_time.date():
+                messages.error(request, "Pickup date cannot be before the current time.")
+                return redirect(request.path)
+
     context = {
         'car': car,
         'total_price': total_price,

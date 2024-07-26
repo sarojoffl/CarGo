@@ -33,7 +33,7 @@ class Sale(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"Sale of {self.car} to {self.buyer} for ${self.amount}"
+        return f"Sale of {self.car} to {self.buyer} for Rs. {self.amount}"
 
 class Rental(models.Model):
     car = models.ForeignKey(Car, related_name='rentals', on_delete=models.CASCADE)
@@ -44,7 +44,7 @@ class Rental(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Rental of {self.car} to {self.renter} from {self.rental_start_date} to {self.rental_end_date} for ${self.amount}"
+        return f"Rental of {self.car} to {self.renter} from {self.rental_start_date} to {self.rental_end_date} for Rs. {self.amount}"
 
 class PaymentDetails(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payment_details')

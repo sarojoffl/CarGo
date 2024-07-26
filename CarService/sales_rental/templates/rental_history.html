@@ -22,7 +22,7 @@
                 <td>{{ rental.renter.username }}</td>
                 <td>{{ rental.rental_start_date }}</td>
                 <td>{{ rental.rental_end_date }}</td>
-                <td>${{ rental.amount|floatformat:2 }}</td>                
+                <td>Rs. {{ rental.amount|floatformat:2 }}</td>                
                 <td>{{ rental.is_active|yesno:"Active,Inactive" }}</td>
             </tr>
             {% endfor %}

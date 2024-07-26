@@ -7,34 +7,29 @@
   <title>CarGO - Checkout</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
-  <script>
-    function calculateTotal() {
-      const rentalPricePerDay = parseFloat(document.getElementById('rentalPricePerDay').value);
-      const startDate = new Date(document.getElementById('startdate').value);
-      const endDate = new Date(document.getElementById('enddate').value);
-      const totalPriceElement = document.getElementById('totalPrice');
-      const rentalDaysDisplay = document.getElementById('rentalDaysDisplay');
-      
-      if (startDate && endDate && startDate < endDate) {
-        const timeDifference = endDate - startDate;
-        const rentalDays = Math.ceil(timeDifference / (1000 * 3600 * 24)); // Ensure full day calculation
-        const totalPrice = rentalPricePerDay * rentalDays;
-        totalPriceElement.innerText = `$${totalPrice.toFixed(2)}`;
-        rentalDaysDisplay.innerText = rentalDays;
-      } else {
-        totalPriceElement.innerText = "Invalid date range";
-        rentalDaysDisplay.innerText = 0;
-      }
-    }
-  </script>
+  <script src="{% static 'js/checkout.js' %}" defer></script>
 </head>
 <body>
 
 <h2>Checkout Form</h2>
+<div class="container">
+  <!-- Messages block -->
+  {% if messages %}
+  <div class="alert alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endif %}
+  <!-- End of messages block -->
+
 <div class="row">
   <div class="col-75">
     <div class="container">
-      <form action="{% url 'process_checkout' %}" method="post">
+      <form action="{% url 'process_checkout' %}" method="post" onsubmit="return validateForm()">
         {% csrf_token %}
         <input type="hidden" name="transaction_type" value="{{ transaction_type }}">
         <input type="hidden" name="car_id" value="{{ car.id }}">
@@ -51,7 +46,7 @@
             <input type="text" id="adr" name="address" placeholder="Ncit backgate" required>
             <label for="city"><i class="fa fa-institution"></i> City</label>
             <input type="text" id="city" name="city" placeholder="Balkumari" required>
-        </div>
+          </div>
         
           <div class="col-50">
             <h3>Payment</h3>
@@ -85,9 +80,9 @@
       <p><a href="#">{{ car.make }} {{ car.model }} ({{ car.year }})</a> 
          <span class="price">
             {% if transaction_type == "rent" %}
-              ${{ rental_price_per_day }} per day
+              Rs. {{ rental_price_per_day }} per day
             {% else %}
-              ${{ total_price }}
+              Rs. {{ total_price }}
             {% endif %}
          </span>
       </p>
@@ -95,7 +90,7 @@
       <p>Number of rental days: <span id="rentalDaysDisplay">{{ rental_days }}</span></p>
       {% endif %}
       <hr>
-      <p>Total <span id="totalPrice" class="price" style="color:black"><b>${{ total_price }}</b></span></p>
+      <p>Total <span id="totalPrice" class="price" style="color:black"><b>Rs. {{ total_price }}</b></span></p>
     </div>
   </div>
 </div>

@@ -5,7 +5,7 @@
   <h2>Sales History</h2>
   <ul>
     {% for sale in user_sales %}
-      <li>{{ sale.car.make }} {{ sale.car.model }} - Sold for ${{ sale.amount }} on {{ sale.sale_date }}</li>
+      <li>{{ sale.car.make }} {{ sale.car.model }} - Sold for Rs. {{ sale.amount }} on {{ sale.sale_date }}</li>
     {% empty %}
       <li>No sales history.</li>
     {% endfor %}
@@ -14,7 +14,7 @@
   <h2>Rental History</h2>
   <ul>
     {% for rental in user_rentals %}
-      <li>{{ rental.car.make }} {{ rental.car.model }} - Rented from {{ rental.rental_start_date }} to {{ rental.rental_end_date }} for ${{ rental.amount }}</li>
+      <li>{{ rental.car.make }} {{ rental.car.model }} - Rented from {{ rental.rental_start_date }} to {{ rental.rental_end_date }} for Rs. {{ rental.amount }}</li>
     {% empty %}
       <li>No rental history.</li>
     {% endfor %}

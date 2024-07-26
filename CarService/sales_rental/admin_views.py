@@ -112,6 +112,19 @@ def user_delete(request, user_id):
         user.delete()
         return redirect('user_list')
     return render(request, 'user_confirm_delete.html', {'user': user})
+    
+@user_passes_test(lambda u: u.is_superuser)
+def admin_user_history(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    sales = Sale.objects.filter(buyer=user)
+    rentals = Rental.objects.filter(renter=user)
+
+    context = {
+        'user': user,
+        'sales': sales,
+        'rentals': rentals
+    }
+    return render(request, 'admin_user_history.html', context)    
 
 @user_passes_test(lambda u: u.is_superuser)
 def car_history(request, car_id):
