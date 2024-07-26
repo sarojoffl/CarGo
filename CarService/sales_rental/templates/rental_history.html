@@ -13,6 +13,7 @@
                 <th>End Date</th>
                 <th>Amount</th>
                 <th>Status</th>
+                <th>Cancel/Details</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,26 @@
                 <td>{{ rental.rental_end_date }}</td>
                 <td>Rs. {{ rental.amount|floatformat:2 }}</td>                
                 <td>{{ rental.is_active|yesno:"Active,Inactive" }}</td>
+                <td>
+                    {% if rental.is_active %}
+                    <form method="post" action="{% url 'cancel_rental' rental.id %}">
+                        {% csrf_token %}
+                        <label for="cancellation_reason">Reason:</label>
+                        <select name="cancellation_reason" id="cancellation_reason" required>
+                            <option value="Customer Request">Customer Request</option>
+                            <option value="Payment Issues">Payment Issues</option>
+                            <option value="Vehicle Maintenance">Vehicle Maintenance</option>
+                            <option value="Policy Violation">Policy Violation</option>
+                        </select>
+                        <button type="submit">Cancel</button>
+                    </form>
+                    {% elif rental.cancellation_reason and rental.cancellation_date %}
+                    <p>Reason: {{ rental.cancellation_reason }}</p>
+                    <p>Date: {{ rental.cancellation_date }}</p>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -27,6 +27,7 @@ def login_register_view(request):
                         return redirect('index')
                 else:
                     messages.error(request, "Please confirm your email before logging in.")
+                    request.session['user_id'] = user.id
                     return redirect('confirm_email')
             else:
                 messages.error(request, "Invalid username and/or password.", extra_tags='signin')
@@ -59,6 +60,7 @@ def login_register_view(request):
                 user.save()
                 send_otp_email(user, 'Your OTP Code', 'confirm your email')
                 messages.success(request, "Check your email for the OTP code to confirm your email.")
+                request.session['user_id'] = user.id
                 return redirect('confirm_email')
             except IntegrityError:
                 messages.error(request, "Username already taken.", extra_tags='signup')
@@ -86,6 +88,7 @@ def confirm_email(request):
                 user.save()
                 send_otp_email(user, 'Your OTP Code', 'confirm your email')
                 messages.info(request, "A new OTP has been sent to your email.")
+                request.session['user_id'] = user.id
                 return redirect('confirm_email')
 
             user.email_confirmed = True
@@ -185,7 +188,7 @@ def resend_otp(request):
         
         if not user_id:
             messages.error(request, "Session expired. Please try again.")
-            return redirect('forgot_password')
+            return redirect('login_register')
         
         try:
             user = User.objects.get(id=user_id)

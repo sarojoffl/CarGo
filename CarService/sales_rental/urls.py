@@ -28,6 +28,7 @@ urlpatterns = [
     path('car_history/<int:car_id>/', admin_views.car_history, name='car_history'),
     path('admin_user_history/<int:user_id>/', admin_views.admin_user_history, name='admin_user_history'),
     path('rental_history/', admin_views.rental_history, name='rental_history'),
+    path('cancel_rental/<int:rental_id>/', admin_views.cancel_rental, name='cancel_rental'),
     path('sales_history/', admin_views.sales_history, name='sales_history'),
     path('users/', admin_views.user_list, name='user_list'),
     path('user/<int:user_id>/edit/', admin_views.user_edit, name='user_edit'),

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import user_passes_test
 from .forms import CarForm, CarImageFormSet, UserForm
 from .models import Car, CarImage, Rental, Sale, PaymentDetails
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.db.models import Sum
 
 User = get_user_model()
@@ -137,12 +138,42 @@ def car_history(request, car_id):
         'sales': sales,
         'rentals': rentals
     }
+
+    total_sales_revenue = sum(sale.amount for sale in sales)
+    total_rentals_revenue = sum(rental.amount for rental in rentals)
+    total_revenue = total_sales_revenue + total_rentals_revenue
+
+    context = {
+        'car': car,
+        'sales': sales,
+        'rentals': rentals,
+        'total_sales_revenue': total_sales_revenue,
+        'total_rentals_revenue': total_rentals_revenue,
+        'total_revenue': total_revenue
+    }
     return render(request, 'car_history.html', context)
     
 @user_passes_test(lambda u: u.is_superuser)
 def rental_history(request):
     rental_history = Rental.objects.order_by('-rental_start_date')
     return render(request, 'rental_history.html', {'rental_history': rental_history})
+    
+@user_passes_test(lambda u: u.is_superuser)
+def cancel_rental(request, rental_id):
+    rental = get_object_or_404(Rental, id=rental_id)
+    if rental.is_active:
+        if request.method == 'POST':
+            cancellation_reason = request.POST.get('cancellation_reason')
+            rental.is_active = False
+            rental.cancellation_reason = cancellation_reason
+            rental.cancellation_date = timezone.now()
+            rental.save()
+            
+            car = rental.car
+            car.is_available_for_rent = True
+            car.save()
+        return redirect('rental_history')
+    return render(request, 'cancel_rental.html', {'rental': rental})
 
 @user_passes_test(lambda u: u.is_superuser)
 def sales_history(request):

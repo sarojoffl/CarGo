@@ -53,5 +53,12 @@
     </table>
     {% endif %}
 </div>
+
+<div class="total-revenue">
+    <h2>Total Revenue</h2>
+    <p>Total Sales Revenue: Rs. {{ total_sales_revenue|floatformat:2 }}</p>
+    <p>Total Rentals Revenue: Rs. {{ total_rentals_revenue|floatformat:2 }}</p>
+    <p><strong>Total Revenue: Rs. {{ total_revenue|floatformat:2 }}</strong></p>
+</div>
 {% endblock %}
 

@@ -1,6 +1,7 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-from .models import Car, CarImage
+from .models import Car, CarImage, Rental
 
 User = get_user_model()
 
@@ -20,6 +21,12 @@ class CarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = ['make', 'model', 'year', 'price', 'description', 'is_available_for_sale', 'is_available_for_rent']
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        if price is not None and price < 0:
+            raise ValidationError("Price cannot be negative.")
+        return price
 
 class CarImageForm(forms.ModelForm):
     class Meta:

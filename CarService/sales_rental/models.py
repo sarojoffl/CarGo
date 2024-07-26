@@ -41,6 +41,8 @@ class Rental(models.Model):
     rental_start_date = models.DateTimeField()
     rental_end_date = models.DateTimeField()
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    cancellation_reason = models.CharField(max_length=255, blank=True, null=True)
+    cancellation_date = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
