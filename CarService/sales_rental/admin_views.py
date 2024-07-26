@@ -182,5 +182,5 @@ def sales_history(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def payment_history(request):
-    payments = PaymentDetails.objects.all()
+    payments = PaymentDetails.objects.all().order_by('-transaction_date')
     return render(request, 'payment_history.html', {'payments': payments})

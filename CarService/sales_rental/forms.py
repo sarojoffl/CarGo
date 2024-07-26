@@ -20,7 +20,7 @@ class CarFilterForm(forms.Form):
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car
-        fields = ['make', 'model', 'year', 'price', 'description', 'is_available_for_sale', 'is_available_for_rent']
+        fields = ['make', 'model', 'year', 'price', 'description', 'discount', 'is_available_for_sale', 'is_available_for_rent']
 
     def clean_price(self):
         price = self.cleaned_data.get('price')
